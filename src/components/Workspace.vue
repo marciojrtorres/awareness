@@ -4,7 +4,8 @@
         <Link v-for="link in links" v-bind:key="link.index"
           :x1="link.x1" :y1="link.y1" :x2="link.x2" :y2="link.y2" />
         <Artifact v-for="artifact in artifacts" :artifact="artifact"
-          v-bind:key="artifact.index" @addArtifact="addArtifact" />
+          v-bind:key="artifact.index"
+          @addArtifact="addArtifact" @removeArtifact="removeArtifact" />
     </svg>
     <output>{{links}}</output>
   </div>
@@ -27,7 +28,7 @@ export default {
         x: 20,
         y: 20,
         id: _id++,
-        links: []
+        links: [],
       }],
     };
   },
@@ -41,16 +42,16 @@ export default {
             x1: art.x,
             y1: art.y,
             x2: other.x,
-            y2: other.y
+            y2: other.y,
           });
         }
       }
       return links;
-    }
+    },
   },
   methods: {
     artifact(id) {
-      return this.artifacts.find(a => a.id === id);
+      return this.artifacts.find((a) => a.id === id);
     },
     dragOver(e) {
       e.preventDefault();
@@ -63,6 +64,17 @@ export default {
       this.artifacts[id].x = this.artifacts[id].x + (e.x - x);
       this.artifacts[id].y = this.artifacts[id].y + (e.y - y);
     },
+    removeArtifact(e) {
+      const index = this.artifacts.findIndex((a) => a === e.source.artifact);
+      const art = this.artifacts.find((a) => a === e.source.artifact);
+      if (index >= 0) {
+        this.artifacts.splice(index, 1);
+        this.artifacts.forEach((a) => {
+          const lnk = a.links.findIndex((l) => l.artifact === art.id);
+          if (lnk >= 0) a.links.splice(lnk, 1);
+        });
+      }
+    },
     addArtifact(e) {
       const art = {
         name: `New Artifact`,
@@ -72,13 +84,13 @@ export default {
         links: [
           {
             direction: 'left',
-            artifact: e.source.artifact.id
-          }
-        ]
+            artifact: e.source.artifact.id,
+          },
+        ],
       };
       e.source.artifact.links.push({
         direction: 'right',
-        artifact: art.id
+        artifact: art.id,
       });
       this.artifacts.push(art);
       const index = parseInt(Math.random() * 2);
@@ -90,7 +102,7 @@ export default {
     height: Number,
   },
   components: {
-    Artifact, Link
+    Artifact, Link,
   },
 };
 </script>

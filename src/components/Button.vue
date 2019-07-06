@@ -35,6 +35,9 @@ export default {
   g.button circle {
     fill: lightblue;
   }
+  g.button:hover {
+    cursor: pointer;
+  }
   g.button text {
     fill: darkslategray;
     font-family: 'Courier New', Courier, monospace;

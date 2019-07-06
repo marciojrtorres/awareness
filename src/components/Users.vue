@@ -13,23 +13,23 @@ export default {
   name: 'Users',
   data: function() {
     return {
-        
+
     };
   },
   computed: {
     users: function() {
       return users;
-    }
+    },
   },
   methods: {
-    
+
   },
   props: {
-    
+
   },
   components: {
-    User
-  }
+    User,
+  },
 };
 </script>
 
@@ -43,7 +43,8 @@ export default {
         align-self: center;
     }
     div.users p {
-        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+          'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
         font-size: 0.8em;
         margin-top: 0.2em;
         text-align: center;

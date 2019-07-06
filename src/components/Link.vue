@@ -21,8 +21,8 @@ export default {
     y2: {
       type: Number,
       default: 0,
-    }
-  }
+    },
+  },
 };
 </script>
 

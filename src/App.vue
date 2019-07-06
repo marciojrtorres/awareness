@@ -12,7 +12,7 @@ import Users from './components/Users.vue';
 export default {
   name: 'app',
   components: {
-    Workspace, Users
+    Workspace, Users,
   },
 };
 </script>

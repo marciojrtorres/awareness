@@ -2,7 +2,9 @@
   <g class="artifact" draggable="true" @dragstart="drag">
     <Button :x="artifact.x + 110" :y="artifact.y + 10"
       text=">" @click="addArtifact" />
-    <Button :x="artifact.x + 110" :y="artifact.y + 40"
+    <Button :x="artifact.x + 110" :y="artifact.y + 30"
+      text="x" @click="removeArtifact" />
+    <Button :x="artifact.x + 110" :y="artifact.y + 50"
       text="+" @click="addProperty" />
     <rect :x="artifact.x" :y="artifact.y"
       width="100" height="80" class="body" />
@@ -23,6 +25,9 @@ export default {
   methods: {
     addArtifact() {
       this.$emit('addArtifact', {source: this});
+    },
+    removeArtifact() {
+      this.$emit('removeArtifact', {source: this});
     },
     addProperty() {
       const n = this.properties.length + 1;
