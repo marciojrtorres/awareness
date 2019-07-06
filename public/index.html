@@ -5,13 +5,69 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <style>
+      /* div#app {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -o-user-select:none;
+      } */
+      [draggable] {
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
+        /* Required to make elements draggable in old WebKit */
+        -khtml-user-drag: element;
+        -webkit-user-drag: element;
+      }
+      div.piano {
+        width: 40px;
+        height: 40px;
+        background-image: url('./images/piano.png');
+        background-size: 40px;
+        border-radius: 50%;
+        border: 2px solid darkred;
+        background-color: rgb(216, 168, 208);
+      }
+      div.guitar {
+        width: 40px;
+        height: 40px;
+        background-image: url('./images/guitar.png');
+        background-size: 40px;
+        border-radius: 50%;
+        border: 2px solid darkgreen;
+        background-color: rgb(122, 202, 122);
+      }
+      div.me {
+        width: 40px;
+        height: 40px;
+        /* background-image: url('./images/guitar.png'); */
+        background-size: 40px;
+        border-radius: 50%;
+        border: 2px solid darkgoldenrod;
+        background-color: rgb(228, 184, 119);
+      }
+    </style>
     <title>a</title>
   </head>
   <body>
-    <noscript>
-      <strong>We're sorry but a doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
     <div id="app"></div>
-    <!-- built files will be auto injected -->
   </body>
+  <!-- <script src='https://surikov.github.io/webaudiofont/npm/dist/WebAudioFontPlayer.js'></script>
+  <script src='https://surikov.github.io/webaudiofontdata/sound/0240_Aspirin_sf2_file.js'></script>
+  <script>
+    var selectedPreset = _tone_0240_Aspirin_sf2_file;
+    var AudioContextFunc = window.AudioContext || window.webkitAudioContext;
+    var audioContext = new AudioContextFunc();
+    var player=new WebAudioFontPlayer();
+    player.adjustPreset(audioContext,selectedPreset);
+  	function startWaveTableNow(pitch) {
+  	  //var audioBufferSourceNode = player.queueWaveTable(audioContext, audioContext.destination, selectedPreset, audioContext.currentTime + 0, pitch, 0.4);
+      //var audioBufferSourceNode = player.queueWaveTable(audioContext, audioContext.destination, selectedPreset, audioContext.currentTime + 0.4, pitch, 0.2);
+      //var audioBufferSourceNode = player.queueWaveTable(audioContext, audioContext.destination, selectedPreset, audioContext.currentTime + 0.6, pitch, 0.2);
+      var audioBufferSourceNode = player.queueWaveTable(audioContext, audioContext.destination, selectedPreset, audioContext.currentTime + 0, pitch, 1);
+    }
+  </script> -->
 </html>

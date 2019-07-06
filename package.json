@@ -9,7 +9,10 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
-    "vue": "^2.6.10"
+    "reset.css": "^2.0.2",
+    "tone": "^13.4.9",
+    "vue": "^2.6.10",
+    "webaudiofont": "^2.5.47"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.8.0",
@@ -18,6 +21,7 @@
     "babel-eslint": "^10.0.1",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "eslint-config-google": "^0.12.0",
     "vue-template-compiler": "^2.6.10"
   },
   "eslintConfig": {
@@ -27,7 +31,8 @@
     },
     "extends": [
       "plugin:vue/essential",
-      "eslint:recommended"
+      "eslint:recommended",
+      "google"
     ],
     "rules": {},
     "parserOptions": {

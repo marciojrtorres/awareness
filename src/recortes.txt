@@ -1,0 +1,23 @@
+// import Tone from 'tone';
+// const synth = new Tone.MembraneSynth().toMaster();
+// synth.triggerAttackRelease('E6', '8n');
+// synth.triggerAttackRelease('C3', '8n');
+// if (Tone.context.state !== 'running') {
+//   Tone.context.resume();
+// }
+import WebAudioFontPlayer from 'webaudiofont';
+// window.AudioContext = window.AudioContext| window.webkitAudioContext;
+const audioContext = new AudioContext();
+const player = new WebAudioFontPlayer();
+
+changeInstrument('https://surikov.github.io/webaudiofontdata/sound/0290_Aspirin_sf2_file.js', '_tone_0290_Aspirin_sf2_file');
+// eslint-disable-next-line require-jsdoc
+function changeInstrument(path, name) {
+  player.loader.startLoad(audioContext, path, name);
+  player.loader.waitLoad(function() {
+    player.adjustPreset(audioContext, window[name]);
+    player.queueWaveTable(audioContext, audioContext.destination,
+        window[name], audioContext.currentTime + 5, 12 * 4, 1);
+  });
+}
+changeInstrument('https://surikov.github.io/webaudiofontdata/sound/0290_Aspirin_sf2_file.js', '_tone_0290_Aspirin_sf2_file');
