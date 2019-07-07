@@ -5,7 +5,7 @@
           :x1="link.x1" :y1="link.y1" :x2="link.x2" :y2="link.y2" />
         <Artifact v-for="artifact in artifacts" :artifact="artifact"
           v-bind:key="artifact.index"
-          @addArtifact="addArtifact" @removeArtifact="removeArtifact" />
+          @add="addArtifact" @remove="removeArtifact" />
     </svg>
     <output>{{links}}</output>
   </div>
@@ -24,10 +24,10 @@ export default {
   data: function() {
     return {
       artifacts: [{
-        name: 'Root',
+        name: 'ROOT',
         x: 20,
         y: 20,
-        id: _id++
+        id: _id++,
       }],
       links: [],
     };
@@ -37,10 +37,8 @@ export default {
       return this.links.map(link => {
         const [one, another] = [this.artifact(link[0]), this.artifact(link[1])];
         return {
-          x1: one.x,
-          y1: one.y,
-          x2: another.x,
-          y2: another.y,
+          x1: one.x, y1: one.y,
+          x2: another.x, y2: another.y,
         };
       });
     },

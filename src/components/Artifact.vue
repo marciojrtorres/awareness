@@ -24,10 +24,10 @@ export default {
   name: 'Artifact',
   methods: {
     addArtifact() {
-      this.$emit('addArtifact', {source: this});
+      this.$emit('add', {source: this});
     },
     removeArtifact() {
-      this.$emit('removeArtifact', {source: this});
+      this.$emit('remove', {source: this});
     },
     addProperty() {
       const n = this.properties.length + 1;
