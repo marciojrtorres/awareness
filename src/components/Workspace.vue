@@ -1,7 +1,7 @@
 <template>
   <div class="workspace">
     <svg width="100%" :height="height" @dragover="dragOver" @drop="drop">
-        <Link v-for="link in links" v-bind:key="link.index"
+        <Link v-for="link in lines" v-bind:key="link.index"
           :x1="link.x1" :y1="link.y1" :x2="link.x2" :y2="link.y2" />
         <Artifact v-for="artifact in artifacts" :artifact="artifact"
           v-bind:key="artifact.index"
@@ -27,26 +27,22 @@ export default {
         name: 'Root',
         x: 20,
         y: 20,
-        id: _id++,
-        links: [],
+        id: _id++
       }],
+      links: [],
     };
   },
   computed: {
-    links: function() {
-      const links = [];
-      for (const art of this.artifacts) {
-        for (const link of art.links) {
-          const other = this.artifact(link.artifact);
-          links.push({
-            x1: art.x,
-            y1: art.y,
-            x2: other.x,
-            y2: other.y,
-          });
-        }
-      }
-      return links;
+    lines: function() {
+      return this.links.map(link => {
+        const [one, another] = [this.artifact(link[0]), this.artifact(link[1])];
+        return {
+          x1: one.x,
+          y1: one.y,
+          x2: another.x,
+          y2: another.y,
+        };
+      });
     },
   },
   methods: {
@@ -61,18 +57,19 @@ export default {
       const id = e.dataTransfer.getData('id');
       const x = parseInt(e.dataTransfer.getData('x'));
       const y = parseInt(e.dataTransfer.getData('y'));
-      this.artifacts[id].x = this.artifacts[id].x + (e.x - x);
-      this.artifacts[id].y = this.artifacts[id].y + (e.y - y);
+      const art = this.artifacts.find(a => a.id === id);
+      if (art) [art.x, art.y] = [art.x + (e.x - x), art.y + (e.y - y)];
     },
     removeArtifact(e) {
       const index = this.artifacts.findIndex((a) => a === e.source.artifact);
       const art = this.artifacts.find((a) => a === e.source.artifact);
       if (index >= 0) {
         this.artifacts.splice(index, 1);
-        this.artifacts.forEach((a) => {
-          const lnk = a.links.findIndex((l) => l.artifact === art.id);
-          if (lnk >= 0) a.links.splice(lnk, 1);
-        });
+        let linkIndex = -1;
+        while ((linkIndex = this.links.findIndex(link => 
+            link[0] === art.id || link[1] === art.id)) >= 0) {
+          this.links.splice(linkIndex, 1);
+        }
       }
     },
     addArtifact(e) {
@@ -81,18 +78,10 @@ export default {
         x: e.source.artifact.x + 100,
         y: e.source.artifact.y + 100,
         id: _id++,
-        links: [
-          {
-            direction: 'left',
-            artifact: e.source.artifact.id,
-          },
-        ],
       };
-      e.source.artifact.links.push({
-        direction: 'right',
-        artifact: art.id,
-      });
       this.artifacts.push(art);
+      this.links.push([e.source.artifact.id, art.id]);
+      // alternating users
       const index = parseInt(Math.random() * 2);
       EventHub.$emit('sample', users[index].instrument);
     },
@@ -105,6 +94,17 @@ export default {
     Artifact, Link,
   },
 };
+
+// const lnk = {
+//   from: {
+//     art: 1,
+//     edge: 1,
+//   },
+//   to: {
+//     art: 4,
+//     edge: 1
+//   }
+// };
 </script>
 
 <style scoped>
