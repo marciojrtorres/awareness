@@ -4,7 +4,7 @@
       text=">" @click="addArtifact" />
     <Button :x="artifact.x + 110" :y="artifact.y + 30"
       text="x" @click="removeArtifact" />
-    <Button :x="artifact.x + 110" :y="artifact.y + 50"
+    <Button :x="artifact.x + 110" :y="artifact.y + 70"
       text="+" @click="addProperty" />
     <rect :x="artifact.x" :y="artifact.y"
       width="100" height="80" class="body" />
@@ -24,10 +24,12 @@ export default {
   name: 'Artifact',
   methods: {
     addArtifact() {
-      this.$emit('add', {source: this});
+      const artifact = this.artifact;
+      this.$emit('add', {source: artifact});
     },
     removeArtifact() {
-      this.$emit('remove', {source: this});
+      const artifact = this.artifact;
+      this.$emit('remove', {artifact: artifact});
     },
     addProperty() {
       const n = this.properties.length + 1;

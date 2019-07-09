@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Users />
-    <Workspace :width="600" :height="500"/>
+    <Workspace :width="600" :height="800"/>
   </div>
 </template>
 
