@@ -23,8 +23,8 @@ import Bot from '../Bot';
 let _id = 0;
 const ROOT = {
   name: 'ROOT',
-  x: 600,
-  y: 300,
+  x: 800,
+  y: 600,
   id: _id++,
 };
 
@@ -93,8 +93,8 @@ export default {
       this.artifacts.push(art);
       this.links.push([e.source.id, art.id]);
       // alternating users
-      const index = e.user || parseInt(Math.random() * 2);
-      EventHub.$emit('sample', users[index].instrument);
+      // const index = e.user || parseInt(Math.random() * 2);
+      // EventHub.$emit('sample', users[index].instrument);
     },
   },
   props: {
