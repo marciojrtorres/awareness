@@ -15,8 +15,8 @@
 <script>
 import Artifact from './Artifact.vue';
 import Link from './Link';
-import EventHub from '../EventHub';
-import {users} from '../Session';
+// import EventHub from '../EventHub';
+// import {users} from '../Session';
 import Button from './Button';
 import Bot from '../Bot';
 
@@ -49,10 +49,16 @@ export default {
   },
   methods: {
     simulate() {
+
       Bot.onCreateArtifact = (e) => {
         this.addArtifact({
           source: e.source,
           add: e.add,
+        });
+      };
+      Bot.onDropArtifact = (e) => {
+        this.removeArtifact({
+          source: e.source
         });
       };
       Bot.run(ROOT);
@@ -71,9 +77,10 @@ export default {
       const art = this.artifact(id);
       if (art) [art.x, art.y] = [art.x + (e.x - x), art.y + (e.y - y)];
     },
-    removeArtifact(artifact) {
-      const index = this.artifacts.findIndex((a) => a === e.source.artifact);
-      const art = this.artifacts.find((a) => a === e.source.artifact);
+    removeArtifact(e) {
+      const art = e.source;
+      const index = this.artifacts.findIndex(a => a.id == art.id);
+      console.log(index);
       if (index >= 0) {
         this.artifacts.splice(index, 1);
         let linkIndex = -1;

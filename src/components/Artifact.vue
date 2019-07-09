@@ -29,7 +29,7 @@ export default {
     },
     removeArtifact() {
       const artifact = this.artifact;
-      this.$emit('remove', {artifact: artifact});
+      this.$emit('remove', {source: artifact});
     },
     addProperty() {
       const n = this.properties.length + 1;

@@ -1,57 +1,64 @@
+import EventHub from './EventHub';
+import {users} from './Session';
+
 export default {
   root: null,
-  eastmost: {
-    node: null,
+  east: {
+    nodes: [],
     x: 120,
     y: 0,
-    hops: 0,
   },
-  westmost: {
-    node: null,
+  west: {
+    nodes: [],
     x: -120,
     y: 0,
-    hops: 0,
   },
-  northmost: {
-    node: null,
+  north: {
+    nodes: [],
     x: 0,
     y: -100,
-    hops: 0,
   },
   run: function(root) {
     this.root = root;
-    this.westmost.node = root;
-    this.eastmost.node = root;
-    this.northmost.node = root;
-    this.loop(2);
+    this.west.nodes.push(root);
+    this.east.nodes.push(root);
+    this.north.nodes.push(root);
+    this.loop(4);
   },
   loop(n = 10) {
-    const direction = Math.random() > 0.6666 ? this.northmost
-      : Math.random() > 0.3333 ? this.westmost : this.eastmost;
-    this.add(direction);
+    if (n === 0) return; // end loop
+    const randomDirection = Math.random() > 0.6666 ? this.north
+      : Math.random() > 0.3333 ? this.west : this.east;
+    const randomUser = Math.random() > 0.5 ? 1 : 0;
+    const randomAction = Math.random() > 0.5 ? this.add : this.remove;
+    // const randomAction = this.remove;
+    setTimeout(() => {
+      randomAction.call(this, randomDirection, randomUser, n);
+    }, 2000);
   },
-  add(direction) {
-    if (this.onCreateArtifact === null ||
-      this.onCreateArtifact === undefined) {
-      throw new Error('onCreateArtifact function not defined');
+  remove(direction, user, n) {
+    if (direction.nodes.length <= 1) {
+      this.loop(n); // retry
+    } else {
+      this.onDropArtifact({source: direction.nodes.pop()});
+      this.loop(n - 1);
     }
+  },
+  add(direction, user, n) {
+    const current = direction.nodes[direction.nodes.length - 1];
     const add = {
       name: `New`,
-      x: direction.node.x + direction.x,
-      y: direction.node.y + direction.y,
+      x: current.x + direction.x,
+      y: current.y + direction.y,
     };
     this.onCreateArtifact({
-      source: direction.node,
+      source: current,
       add,
     });
-    // update las node and hops counting
-    direction.node = add;
-    direction.hops++;
-    setTimeout(() => {
-      const direction = Math.random() > 0.6666 ? this.northmost :
-        Math.random() > 0.3333 ? this.westmost : this.eastmost;
-      this.add(direction);
-    }, 3000);
+    // update las current and hops counting
+    direction.nodes.push(add);
+    EventHub.$emit('sample', users[user].instrument);
+    this.loop(n - 1);
   },
   onCreateArtifact: null,
   onDropArtifact: null,
