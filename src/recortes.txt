@@ -21,3 +21,25 @@ function changeInstrument(path, name) {
   });
 }
 changeInstrument('https://surikov.github.io/webaudiofontdata/sound/0290_Aspirin_sf2_file.js', '_tone_0290_Aspirin_sf2_file');
+
+
+
+
+
+
+import CreateJS from './CreateJS.js';
+
+console.log('main.js');
+
+function loadHandler(e) {
+    console.log(e);
+    var instance = CreateJS.Sound.play(e.id);
+    // instance.on("complete", handleComplete, this);
+    instance.volume = 1;
+}
+
+CreateJS.Sound.on("fileload", loadHandler);
+CreateJS.Sound.registerSound("./C4.mp3", "guitar|c4");
+CreateJS.Sound.registerSound("./C4(1).mp3", "piano|c4");
+
+// console.dir(createjs)

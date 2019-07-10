@@ -8,7 +8,7 @@
           v-bind:key="artifact.index"
           @add="addArtifact" @remove="removeArtifact" />
     </svg>
-    <output>{{links}}</output>
+    <pre><output>{{links}}</output></pre>
   </div>
 </template>
 
@@ -49,7 +49,6 @@ export default {
   },
   methods: {
     simulate() {
-
       Bot.onCreateArtifact = (e) => {
         this.addArtifact({
           source: e.source,
@@ -58,10 +57,10 @@ export default {
       };
       Bot.onDropArtifact = (e) => {
         this.removeArtifact({
-          source: e.source
+          source: e.source,
         });
       };
-      Bot.run(ROOT);
+      Bot.run(ROOT, 10);
     },
     artifact(id) {
       return this.artifacts.find((a) => a.id == id);
@@ -79,8 +78,7 @@ export default {
     },
     removeArtifact(e) {
       const art = e.source;
-      const index = this.artifacts.findIndex(a => a.id == art.id);
-      console.log(index);
+      const index = this.artifacts.findIndex((a) => a.id == art.id);
       if (index >= 0) {
         this.artifacts.splice(index, 1);
         let linkIndex = -1;
