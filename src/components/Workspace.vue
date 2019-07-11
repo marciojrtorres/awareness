@@ -60,7 +60,7 @@ export default {
           source: e.source,
         });
       };
-      Bot.run(ROOT, 10);
+      Bot.run(ROOT, 20);
     },
     artifact(id) {
       return this.artifacts.find((a) => a.id == id);

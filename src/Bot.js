@@ -37,7 +37,7 @@ export default {
     console.debug('loop', n);
     let direction;
     const randomUser = Math.random() > 0.5 ? 1 : 0;
-    const randomAction = Math.random() > 0.5 ? this.add : this.remove;
+    const randomAction = Math.random() > 0.4 ? this.add : this.remove;
     if (randomAction === this.add) {
       if (this.east.nodes.length < 2) {
         direction = this.east;
@@ -65,9 +65,17 @@ export default {
       this.onDropArtifact({source: dir.nodes.pop()});
       EventHub.$emit('play', {
         instrument: users[user].instrument,
-        note: 'C2',
-        volume: 1,
+        note: 'Cs3',
+        volume: 1.0 - (0.2 * (dir.nodes.length - 1)),
         pan: dir.pan,
+        delay: 0,
+      });
+      EventHub.$emit('play', {
+        instrument: users[user].instrument,
+        note: 'C3',
+        volume: 1.0 - (0.2 * (dir.nodes.length - 1)),
+        pan: dir.pan,
+        delay: 200,
       });
       this.loop(n - 1);
     }
@@ -87,9 +95,17 @@ export default {
     dir.nodes.push(add);
     EventHub.$emit('play', {
       instrument: users[user].instrument,
-      note: 'Cs3',
-      volume: 1,
+      note: 'C3',
+      volume: 1.0 - (0.2 * (dir.nodes.length - 1)),
       pan: dir.pan,
+      delay: 0,
+    });
+    EventHub.$emit('play', {
+      instrument: users[user].instrument,
+      note: 'Cs3',
+      volume: 1.0 - (0.2 * (dir.nodes.length - 1)),
+      pan: dir.pan,
+      delay: 200,
     });
     this.loop(n - 1);
   },
