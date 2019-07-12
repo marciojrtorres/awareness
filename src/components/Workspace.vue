@@ -2,6 +2,7 @@
   <div class="workspace">
     <svg width="100%" :height="height" @dragover="dragOver" @drop="drop">
         <Button :x="15" :y="15" text="S" @click="simulate" />
+        <Button :x="15" :y="35" text="R" @click="run" />
         <Link v-for="link in lines" v-bind:key="link.index"
           :x1="link.x1" :y1="link.y1" :x2="link.x2" :y2="link.y2" />
         <Artifact v-for="artifact in artifacts" :artifact="artifact"
@@ -48,19 +49,11 @@ export default {
     },
   },
   methods: {
-    simulate() {
-      Bot.onCreateArtifact = (e) => {
-        this.addArtifact({
-          source: e.source,
-          add: e.add,
-        });
-      };
-      Bot.onDropArtifact = (e) => {
-        this.removeArtifact({
-          source: e.source,
-        });
-      };
+    run() {
       Bot.run(ROOT, 20);
+    },
+    simulate() {
+      Bot.simulate(ROOT, 20);
     },
     artifact(id) {
       return this.artifacts.find((a) => a.id == id);
@@ -108,6 +101,20 @@ export default {
   },
   components: {
     Artifact, Link, Button,
+  },
+  created() {
+    Bot.onCreateArtifact = (e) => {
+      this.addArtifact({
+        source: e.source,
+        add: e.add,
+        user: e.user,
+      });
+    };
+    Bot.onDropArtifact = (e) => {
+      this.removeArtifact({
+        source: e.source,
+      });
+    };
   },
 };
 

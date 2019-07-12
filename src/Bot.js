@@ -2,6 +2,11 @@
 import EventHub from './EventHub';
 import {users} from './Session';
 
+let keypressed = null;
+document.addEventListener('keypress', function(e) {
+  if (keypressed) keypressed(e.key);
+});
+
 export default {
   root: null,
   east: {
@@ -25,11 +30,26 @@ export default {
     y: -100,
     pan: 0,
   },
-  run: function(root, loopCount = 4) {
+  setup(root, loopCount) {
     this.root = root;
     this.west.nodes.push(root);
     this.east.nodes.push(root);
     this.north.nodes.push(root);
+  },
+  evaluate: false,
+  check(done) {
+    keypressed = (key) => {
+      if (key === 'Enter') done();
+    };
+  },
+  simulate(root, loopCount) {
+    this.setup(root, loopCount);
+    this.evaluate = false;
+    this.loop(loopCount);
+  },
+  run(root, loopCount = 4) {
+    this.setup(root, loopCount);
+    this.evaluate = true;
     this.loop(loopCount);
   },
   loop(n = 10) {
@@ -53,31 +73,28 @@ export default {
       : Math.random() > 0.3333 ? this.west : this.east;
       console.debug('remove', direction.name);
     }
-    // const randomAction = this.remove;
-    setTimeout(() => {
-      randomAction.call(this, direction, randomUser, n);
-    }, 2000);
+    randomAction.call(this, direction, randomUser, n);
   },
   remove(dir, user, n) {
     if (dir.nodes.length <= 1) {
       this.loop(n); // retry
     } else {
       this.onDropArtifact({source: dir.nodes.pop()});
+      // EventHub.$emit('play', {
+      //   instrument: users[user].instrument,
+      //   note: 'D3',
+      //   volume: 1.0 - (0.2 * (dir.nodes.length - 1)),
+      //   pan: dir.pan,
+      //   delay: 0,
+      // });
       EventHub.$emit('play', {
         instrument: users[user].instrument,
-        note: 'Cs3',
-        volume: 1.0 - (0.2 * (dir.nodes.length - 1)),
+        note: 'C2',
+        volume: 1.0 - (0.2 * (dir.nodes.length - 2)),
         pan: dir.pan,
         delay: 0,
       });
-      EventHub.$emit('play', {
-        instrument: users[user].instrument,
-        note: 'C3',
-        volume: 1.0 - (0.2 * (dir.nodes.length - 1)),
-        pan: dir.pan,
-        delay: 200,
-      });
-      this.loop(n - 1);
+      this.next(n);
     }
   },
   add(dir, user, n) {
@@ -86,6 +103,7 @@ export default {
       name: `New ${dir.name}`,
       x: current.x + dir.x,
       y: current.y + dir.y,
+      user,
     };
     this.onCreateArtifact({
       source: current,
@@ -93,21 +111,32 @@ export default {
     });
     // update las current and hops counting
     dir.nodes.push(add);
+    // EventHub.$emit('play', {
+    //   instrument: users[user].instrument,
+    //   note: 'C3',
+    //   volume: 1.0 - (0.2 * (dir.nodes.length - 1)),
+    //   pan: dir.pan,
+    //   delay: 0,
+    // });
     EventHub.$emit('play', {
       instrument: users[user].instrument,
       note: 'C3',
-      volume: 1.0 - (0.2 * (dir.nodes.length - 1)),
+      volume: 1.0 - (0.2 * (dir.nodes.length - 2)),
       pan: dir.pan,
       delay: 0,
     });
-    EventHub.$emit('play', {
-      instrument: users[user].instrument,
-      note: 'Cs3',
-      volume: 1.0 - (0.2 * (dir.nodes.length - 1)),
-      pan: dir.pan,
-      delay: 200,
-    });
-    this.loop(n - 1);
+    this.next(n);
+  },
+  next(n) {
+    setTimeout(() => {
+      if (this.evaluate) {
+        this.check(() => {
+          this.loop(n - 1);
+        });
+      } else {
+        this.loop(n - 1);
+      }
+    }, 2000);
   },
   onCreateArtifact: null,
   onDropArtifact: null,

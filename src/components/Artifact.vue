@@ -7,7 +7,7 @@
     <Button :x="artifact.x + 110" :y="artifact.y + 70"
       text="+" @click="addProperty" />
     <rect :x="artifact.x" :y="artifact.y"
-      width="100" height="80" class="body" />
+      width="100" height="80" :class="['body', `user_${artifact.user}`]" />
     <rect :x="artifact.x" :y="artifact.y"
       width="100" height="20" class="header" />
     <text :x="artifact.x + 5" :y="artifact.y + 15">{{artifact.name}}</text>
@@ -58,18 +58,19 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-  g.artifact rect.body {
-    fill: rgb(200,200,255);
-    stroke: rgb(150,150,255);
-  }
-  g.artifact rect.header {
-    fill: rgb(150,150,255);
-  }
-  g.artifact circle.button {
-    fill: lightblue;
-  }
-  g.artifact text.button {
-    fill: darkslategray;
-  }
+<style lang="sass" scoped>
+  g.artifact
+    rect.body
+      fill: rgb(200,200,255)
+      stroke: rgb(150,150,255)
+    rect.body.user_0
+      fill: rgb(216, 168, 208)
+    rect.body.user_1
+      fill: rgb(122, 202, 122)
+    rect.header
+      fill: rgb(150,150,255)
+    circle.button
+      fill: lightblue
+    text.button
+      fill: darkslategray
 </style>

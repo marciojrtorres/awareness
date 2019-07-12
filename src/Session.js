@@ -1,11 +1,11 @@
 export const users = [
   {
-    name: 'Jane', instrument: 'piano',
+    id: 0, name: 'Jane', instrument: 'piano',
   },
   {
-    name: 'Peter', instrument: 'guitar',
+    id: 1, name: 'Peter', instrument: 'guitar',
   },
   {
-    name: 'Me', instrument: 'me',
+    id: 99, name: 'Me', instrument: 'me',
   },
 ];

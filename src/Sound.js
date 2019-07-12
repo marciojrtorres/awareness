@@ -5,6 +5,7 @@ import EventHub from './EventHub.js';
 export default {
   play({instrument, note, volume = 1, pan = 0, delay = 0}) {
     const options = new CreateJS.PlayPropsConfig().set({volume, delay, pan});
+    // console.debug(options);
     CreateJS.Sound.play(`${instrument}|${note}`, options);
   },
   ready: false,
