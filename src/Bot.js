@@ -54,7 +54,7 @@ export default {
   },
   loop(n = 10) {
     if (n === 0) return; // end loop
-    console.debug('loop', n);
+    // console.debug('loop', n);
     let direction;
     const randomUser = Math.random() > 0.5 ? 1 : 0;
     const randomAction = Math.random() > 0.4 ? this.add : this.remove;
@@ -67,12 +67,15 @@ export default {
         direction = Math.random() > 0.6666 ? this.north
           : Math.random() > 0.3333 ? this.west : this.east;
       }
-      console.debug('add', direction.name);
     } else {
       direction = Math.random() > 0.6666 ? this.north
       : Math.random() > 0.3333 ? this.west : this.east;
-      console.debug('remove', direction.name);
+      // console.debug('remove:', direction.name);
     }
+    console.debug('loop', n, '| action:', randomAction.name,
+        '| direction:', direction.name,
+        '| user:', randomUser,
+        '| distance:', direction.nodes.length);
     randomAction.call(this, direction, randomUser, n);
   },
   remove(dir, user, n) {
@@ -80,16 +83,23 @@ export default {
       this.loop(n); // retry
     } else {
       this.onDropArtifact({source: dir.nodes.pop()});
-      // EventHub.$emit('play', {
-      //   instrument: users[user].instrument,
-      //   note: 'D3',
-      //   volume: 1.0 - (0.2 * (dir.nodes.length - 1)),
-      //   pan: dir.pan,
-      //   delay: 0,
-      // });
       EventHub.$emit('play', {
         instrument: users[user].instrument,
-        note: 'C2',
+        note: 'C3',
+        volume: 1.0 - (0.2 * (dir.nodes.length - 2)),
+        pan: dir.pan,
+        delay: 200,
+      });
+      EventHub.$emit('play', {
+        instrument: users[user].instrument,
+        note: 'E3',
+        volume: 1.0 - (0.2 * (dir.nodes.length - 2)),
+        pan: dir.pan,
+        delay: 100,
+      });
+      EventHub.$emit('play', {
+        instrument: users[user].instrument,
+        note: 'G3',
         volume: 1.0 - (0.2 * (dir.nodes.length - 2)),
         pan: dir.pan,
         delay: 0,
@@ -111,19 +121,26 @@ export default {
     });
     // update las current and hops counting
     dir.nodes.push(add);
-    // EventHub.$emit('play', {
-    //   instrument: users[user].instrument,
-    //   note: 'C3',
-    //   volume: 1.0 - (0.2 * (dir.nodes.length - 1)),
-    //   pan: dir.pan,
-    //   delay: 0,
-    // });
     EventHub.$emit('play', {
       instrument: users[user].instrument,
       note: 'C3',
       volume: 1.0 - (0.2 * (dir.nodes.length - 2)),
       pan: dir.pan,
       delay: 0,
+    });
+    EventHub.$emit('play', {
+      instrument: users[user].instrument,
+      note: 'E3',
+      volume: 1.0 - (0.2 * (dir.nodes.length - 2)),
+      pan: dir.pan,
+      delay: 100,
+    });
+    EventHub.$emit('play', {
+      instrument: users[user].instrument,
+      note: 'G3',
+      volume: 1.0 - (0.2 * (dir.nodes.length - 2)),
+      pan: dir.pan,
+      delay: 200,
     });
     this.next(n);
   },
