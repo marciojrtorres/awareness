@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
-import EventHub from './EventHub';
-import {users} from './Session';
+import Sonify from './Sonify';
 
 let keypressed = null;
+
 document.addEventListener('keypress', function(e) {
   if (keypressed) keypressed(e.key);
 });
@@ -53,8 +53,7 @@ export default {
     this.loop(loopCount);
   },
   loop(n = 10) {
-    if (n === 0) return; // end loop
-    // console.debug('loop', n);
+    if (n === 0) return;
     let direction;
     const randomUser = Math.random() > 0.5 ? 1 : 0;
     const randomAction = Math.random() > 0.4 ? this.add : this.remove;
@@ -69,7 +68,7 @@ export default {
       }
     } else {
       direction = Math.random() > 0.6666 ? this.north
-      : Math.random() > 0.3333 ? this.west : this.east;
+        : Math.random() > 0.3333 ? this.west : this.east;
       // console.debug('remove:', direction.name);
     }
     console.debug('loop', n, '| action:', randomAction.name,
@@ -83,27 +82,7 @@ export default {
       this.loop(n); // retry
     } else {
       this.onDropArtifact({source: dir.nodes.pop()});
-      EventHub.$emit('play', {
-        instrument: users[user].instrument,
-        note: 'C3',
-        volume: 1.0 - (0.2 * (dir.nodes.length - 2)),
-        pan: dir.pan,
-        delay: 200,
-      });
-      EventHub.$emit('play', {
-        instrument: users[user].instrument,
-        note: 'E3',
-        volume: 1.0 - (0.2 * (dir.nodes.length - 2)),
-        pan: dir.pan,
-        delay: 100,
-      });
-      EventHub.$emit('play', {
-        instrument: users[user].instrument,
-        note: 'G3',
-        volume: 1.0 - (0.2 * (dir.nodes.length - 2)),
-        pan: dir.pan,
-        delay: 0,
-      });
+      Sonify.removal({user, dir});
       this.next(n);
     }
   },
@@ -121,27 +100,7 @@ export default {
     });
     // update las current and hops counting
     dir.nodes.push(add);
-    EventHub.$emit('play', {
-      instrument: users[user].instrument,
-      note: 'C3',
-      volume: 1.0 - (0.2 * (dir.nodes.length - 2)),
-      pan: dir.pan,
-      delay: 0,
-    });
-    EventHub.$emit('play', {
-      instrument: users[user].instrument,
-      note: 'E3',
-      volume: 1.0 - (0.2 * (dir.nodes.length - 2)),
-      pan: dir.pan,
-      delay: 100,
-    });
-    EventHub.$emit('play', {
-      instrument: users[user].instrument,
-      note: 'G3',
-      volume: 1.0 - (0.2 * (dir.nodes.length - 2)),
-      pan: dir.pan,
-      delay: 200,
-    });
+    Sonify.addition({user, dir});
     this.next(n);
   },
   next(n) {

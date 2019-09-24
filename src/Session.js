@@ -9,3 +9,8 @@ export const users = [
     id: 99, name: 'Me', instrument: 'me',
   },
 ];
+
+export const sonification = {
+  options: ['instrumento', 'fala', 'instrumento-fala'],
+  selected: 0,
+};
