@@ -16,8 +16,6 @@
 <script>
 import Artifact from './Artifact.vue';
 import Link from './Link';
-// import EventHub from '../EventHub';
-// import {users} from '../Session';
 import Button from './Button';
 import Bot from '../Bot';
 

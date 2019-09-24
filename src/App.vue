@@ -1,6 +1,7 @@
 <template>
   <div id="app" v-if="loaded === true">
-    <Users />
+    <!-- <Users /> -->
+    <Panel/>
     <Workspace :width="600" :height="800"/>
   </div>
   <p v-else>Loading...</p>
@@ -8,7 +9,8 @@
 
 <script>
 import Workspace from './components/Workspace.vue';
-import Users from './components/Users.vue';
+// import Users from './components/Users.vue';
+import Panel from './components/Panel.vue';
 import Sound from './Sound.js';
 
 export default {
@@ -19,7 +21,7 @@ export default {
     };
   },
   components: {
-    Workspace, Users,
+    Workspace, Panel,
   },
   created() {
     Sound.init(() => {

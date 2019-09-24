@@ -1,48 +1,30 @@
 <template>
-  <div class="users">
-    <User v-for="u in users" :name="u.name" :instrument="u.instrument"
-          v-bind:key="u.index" />
+  <div class="sonification">
+    <p>Sonification</p>
   </div>
 </template>
 
 <script>
-import User from './User.vue';
-import Session from '../Session.js';
-
 export default {
-  name: 'Users',
+  name: 'Sonification',
   data: function() {
     return {
 
     };
   },
-  computed: {
-    users: function() {
-      return Session.users;
-    },
-  },
-  methods: {
-
-  },
-  props: {
-
-  },
-  components: {
-    User,
-  },
 };
 </script>
 
 <style scoped>
-    div.users {
+    div.sonification {
         display: flex;
         flex-direction: column;
         width: 60px;
     }
-    div.users div {
+    div.sonification div {
         align-self: center;
     }
-    div.users p {
+    div.sonification p {
         font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
           'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
         font-size: 0.8em;
