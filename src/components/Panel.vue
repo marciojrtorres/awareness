@@ -19,6 +19,7 @@ export default {
 
 <style scoped>
     div.panel {
+        margin: 4px;
         display: flex;
         flex-direction: column;
         width: 60px;

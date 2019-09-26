@@ -10,11 +10,4 @@ export default {
       id: 99, name: 'Me', instrument: 'me',
     },
   ],
-  sonification: {
-    techniques: ['none', 'abstract', 'speech', 'mixed'],
-    selected: 0,
-    get selectedTechnique() {
-      return this.techniques[this.selected];
-    },
-  },
 };

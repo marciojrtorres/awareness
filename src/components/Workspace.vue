@@ -115,17 +115,6 @@ export default {
     };
   },
 };
-
-// const lnk = {
-//   from: {
-//     art: 1,
-//     edge: 1,
-//   },
-//   to: {
-//     art: 4,
-//     edge: 1
-//   }
-// };
 </script>
 
 <style scoped>
