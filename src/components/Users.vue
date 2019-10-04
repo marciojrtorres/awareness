@@ -1,25 +1,23 @@
 <template>
   <div class="users">
-    <User v-for="u in users" :id="u.id" :name="u.name" :instrument="u.instrument"
+    <User v-for="u in session.users" :id="u.id" :name="u.name" :instrument="u.instrument"
           v-bind:key="u.index" />
   </div>
 </template>
 
 <script>
 import User from './User.vue';
-import Session from '../Session.js';
+import {session} from '../Session.js';
 
 export default {
   name: 'Users',
   data: function() {
     return {
-
+      session: session.state
     };
   },
   computed: {
-    users: function() {
-      return Session.users;
-    },
+    
   },
   methods: {
 

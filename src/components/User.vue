@@ -1,18 +1,19 @@
 <template>
   <div class="user" @click="play">
     <div :class="instrument"></div>
-    <p>{{name}}</p>
+    <p :class="{selected: state.selected === id}">{{name}}</p>
   </div>
 </template>
 
 <script>
 import EventHub from '../EventHub';
-import Session from '../Session';
+import {session} from '../Session';
 
 export default {
   name: 'User',
   data: function() {
     return {
+      state: session.state
     };
   },
   computed: {
@@ -20,7 +21,7 @@ export default {
   },
   methods: {
     play() {
-      Session.selected = this.id;
+      session.select(this.id);
       EventHub.$emit('sample', this.instrument);
     },
   },
@@ -42,5 +43,8 @@ export default {
         font-size: 0.8em;
         margin-top: 0.2em;
         text-align: center;
+    }
+    p.selected {
+      font-weight: bold;
     }
 </style>

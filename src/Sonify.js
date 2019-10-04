@@ -1,5 +1,5 @@
 import EventHub from './EventHub';
-import Session from './Session';
+import {session} from './Session';
 
 const synth = window.speechSynthesis;
 const rate = 1.5;
@@ -14,7 +14,7 @@ const techniques = {
     addition: function(e) {
       EventHub.$emit('play', {
         // instrument: Session.users[e.user].instrument,
-        instrument: Session.users[e.user].instrument,
+        instrument: session.currentUser.instrument,
         note: 'C3',
         // volume: 1.0 - (0.2 * (e.dir.nodes.length - 2)),
         volume: 1.0 - (0.2 * (e.distance - 2)),
@@ -23,14 +23,14 @@ const techniques = {
         delay: 0,
       });
       EventHub.$emit('play', {
-        instrument: Session.users[e.user].instrument,
+        instrument: session.currentUser.instrument,
         note: 'E3',
         volume: 1.0 - (0.2 * (e.distance - 2)),
         pan: e.pan,
         delay: 100,
       });
       EventHub.$emit('play', {
-        instrument: Session.users[e.user].instrument,
+        instrument: session.currentUser.instrument,
         note: 'G3',
         volume: 1.0 - (0.2 * (e.distance - 2)),
         pan: e.pan,
@@ -39,21 +39,21 @@ const techniques = {
     },
     removal: function(e) {
       EventHub.$emit('play', {
-        instrument: Session.users[e.user].instrument,
+        instrument: session.currentUser.instrument,
         note: 'C3',
         volume: 1.0 - (0.2 * (e.distance - 2)),
         pan: e.pan,
         delay: 200,
       });
       EventHub.$emit('play', {
-        instrument: Session.users[e.user].instrument,
+        instrument: session.currentUser.instrument,
         note: 'E3',
         volume: 1.0 - (0.2 * (e.distance - 2)),
         pan: e.pan,
         delay: 100,
       });
       EventHub.$emit('play', {
-        instrument: Session.users[e.user].instrument,
+        instrument: session.currentUser.instrument,
         note: 'G3',
         volume: 1.0 - (0.2 * (e.distance - 2)),
         pan: e.pan,
