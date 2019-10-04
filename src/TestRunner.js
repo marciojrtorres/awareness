@@ -11,19 +11,14 @@ export default {
   setup(workspace) {
     this.workspace = workspace;
   },
-  evaluate: false,
   check(done) {
     keypressed = (key) => {
       if (key === 'Enter') done();
     };
   },
-  simulate(loopCount = 5) {
-    this.evaluate = false;
-    this.loop(loopCount);
-  },
-  run(loopCount = 5) {
-    this.evaluate = true;
-    this.loop(loopCount);
+  run({count = 5, evaluate = true, interval = 2000} = {}) {
+    this.options = {count, evaluate, interval};
+    this.loop(count);
   },
   loop(n = 10) {
     if (n === 0) return;
@@ -32,38 +27,27 @@ export default {
     randomAction.call(this, randomUser, n);
   },
   remove(user, n) {
-    /*
-    if (dir.nodes.length <= 1) {
-      this.loop(n); // retry
-    } else {
-      this.onDropArtifact({source: dir.nodes.pop()});
-      Sonify.removal({user, dir});
-      this.next(n);
-    }
-    */
+    console.log('removing');
+    const index = parseInt(Math.random() * this.workspace.artifacts.length);
+    const source = this.workspace.artifacts[index];
+    this.workspace.removeArtifact({source});
     this.next(n);
   },
   add(user, n) {
-    // const add = {
-    //   name: `Test Case ${n}`,
-    //   x: current.x + dir.x,
-    //   y: current.y + dir.y,
-    //   user,
-    // };
-    // Sonify.addition({user, dir});
+    console.log('adding');
     const source = this.workspace.artifacts[0];
     this.workspace.addArtifact({source});
     this.next(n);
   },
   next(n) {
     setTimeout(() => {
-      if (this.evaluate) {
+      if (this.options.evaluate) {
         this.check(() => {
           this.loop(n - 1);
         });
       } else {
         this.loop(n - 1);
       }
-    }, 2000);
+    }, this.options.interval);
   },
 };

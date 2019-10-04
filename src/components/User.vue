@@ -7,6 +7,7 @@
 
 <script>
 import EventHub from '../EventHub';
+import Session from '../Session';
 
 export default {
   name: 'User',
@@ -19,12 +20,14 @@ export default {
   },
   methods: {
     play() {
+      Session.selected = this.id;
       EventHub.$emit('sample', this.instrument);
     },
   },
   props: {
     name: String,
     instrument: String,
+    id: Number,
   },
   components: {
 

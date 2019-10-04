@@ -1,6 +1,6 @@
 <template>
   <div class="users">
-    <User v-for="u in users" :name="u.name" :instrument="u.instrument"
+    <User v-for="u in users" :id="u.id" :name="u.name" :instrument="u.instrument"
           v-bind:key="u.index" />
   </div>
 </template>

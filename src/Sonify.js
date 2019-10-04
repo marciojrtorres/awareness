@@ -13,24 +13,27 @@ const techniques = {
   abstract: {
     addition: function(e) {
       EventHub.$emit('play', {
+        // instrument: Session.users[e.user].instrument,
         instrument: Session.users[e.user].instrument,
         note: 'C3',
-        volume: 1.0 - (0.2 * (e.dir.nodes.length - 2)),
-        pan: e.dir.pan,
+        // volume: 1.0 - (0.2 * (e.dir.nodes.length - 2)),
+        volume: 1.0 - (0.2 * (e.distance - 2)),
+        // pan: e.dir.pan,
+        pan: e.pan,
         delay: 0,
       });
       EventHub.$emit('play', {
         instrument: Session.users[e.user].instrument,
         note: 'E3',
-        volume: 1.0 - (0.2 * (e.dir.nodes.length - 2)),
-        pan: e.dir.pan,
+        volume: 1.0 - (0.2 * (e.distance - 2)),
+        pan: e.pan,
         delay: 100,
       });
       EventHub.$emit('play', {
         instrument: Session.users[e.user].instrument,
         note: 'G3',
-        volume: 1.0 - (0.2 * (e.dir.nodes.length - 2)),
-        pan: e.dir.pan,
+        volume: 1.0 - (0.2 * (e.distance - 2)),
+        pan: e.pan,
         delay: 200,
       });
     },
@@ -38,22 +41,22 @@ const techniques = {
       EventHub.$emit('play', {
         instrument: Session.users[e.user].instrument,
         note: 'C3',
-        volume: 1.0 - (0.2 * (e.dir.nodes.length - 2)),
-        pan: e.dir.pan,
+        volume: 1.0 - (0.2 * (e.distance - 2)),
+        pan: e.pan,
         delay: 200,
       });
       EventHub.$emit('play', {
         instrument: Session.users[e.user].instrument,
         note: 'E3',
-        volume: 1.0 - (0.2 * (e.dir.nodes.length - 2)),
-        pan: e.dir.pan,
+        volume: 1.0 - (0.2 * (e.distance - 2)),
+        pan: e.pan,
         delay: 100,
       });
       EventHub.$emit('play', {
         instrument: Session.users[e.user].instrument,
         note: 'G3',
-        volume: 1.0 - (0.2 * (e.dir.nodes.length - 2)),
-        pan: e.dir.pan,
+        volume: 1.0 - (0.2 * (e.distance - 2)),
+        pan: e.pan,
         delay: 0,
       });
     },
@@ -63,18 +66,18 @@ const techniques = {
   },
   speech: {
     addition: function(e) { // {user: int, dir: {nodes: [], pan: int}}
-      const direcao = ['esquerda', 'frente', 'direita'][e.dir.pan + 1];
+      const direcao = ['esquerda', 'frente', 'direita'][e.pan + 1];
       const msg = `artefato adicionado à ${direcao}`;
       const utter = new SpeechSynthesisUtterance(msg);
-      utter.volume = 1.0 - (0.2 * (e.dir.nodes.length - 2));
+      utter.volume = 1.0 - (0.2 * (e.distance - 2));
       utter.rate = rate;
       synth.speak(utter);
     },
     removal: function(e) {
-      const direcao = ['esquerda', 'frente', 'direita'][e.dir.pan + 1];
+      const direcao = ['esquerda', 'frente', 'direita'][e.pan + 1];
       const msg = `artefato removido à ${direcao}`;
       const utter = new SpeechSynthesisUtterance(msg);
-      utter.volume = 1.0 - (0.2 * (e.dir.nodes.length - 2));
+      utter.volume = 1.0 - (0.2 * (e.distance - 2));
       utter.rate = rate;
     },
     updating: function(e) {
@@ -89,12 +92,12 @@ export default {
   },
   selected: 'none',
   addition: function(e) {
-    techniques[this.selected].addition(e);
+    if (e.user && e.user > 0) techniques[this.selected].addition(e);
   },
   removal: function(e) {
-    techniques[this.selected].removal(e);
+    if (e.user && e.user > 0) techniques[this.selected].removal(e);
   },
   updating: function(e) {
-    techniques[this.selected].updating(e);
+    if (e.user && e.user > 0) techniques[this.selected].updating(e);
   },
 };
