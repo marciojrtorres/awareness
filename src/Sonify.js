@@ -11,7 +11,7 @@ const techniques = {
     updating: () => {},
   },
   abstract: {
-    addition: function(e) {
+    addition(e) {
       EventHub.$emit('play', {
         // instrument: Session.users[e.user].instrument,
         instrument: session.currentUser.instrument,
@@ -37,7 +37,7 @@ const techniques = {
         delay: 200,
       });
     },
-    removal: function(e) {
+    removal(e) {
       EventHub.$emit('play', {
         instrument: session.currentUser.instrument,
         note: 'C3',
@@ -60,12 +60,12 @@ const techniques = {
         delay: 0,
       });
     },
-    updating: function(e) {
+    updating(e) {
 
     },
   },
   speech: {
-    addition: function(e) { // {user: int, dir: {nodes: [], pan: int}}
+    addition(e) { // {user: int, dir: {nodes: [], pan: int}}
       const direcao = ['esquerda', 'frente', 'direita'][e.pan + 1];
       const msg = `artefato adicionado à ${direcao}`;
       const utter = new SpeechSynthesisUtterance(msg);
@@ -73,14 +73,14 @@ const techniques = {
       utter.rate = rate;
       synth.speak(utter);
     },
-    removal: function(e) {
+    removal(e) {
       const direcao = ['esquerda', 'frente', 'direita'][e.pan + 1];
       const msg = `artefato removido à ${direcao}`;
       const utter = new SpeechSynthesisUtterance(msg);
       utter.volume = 1.0 - (0.2 * (e.distance - 2));
       utter.rate = rate;
     },
-    updating: function(e) {
+    updating(e) {
       alert('speaking! ' + JSON.stringify(e));
     },
   },
@@ -91,13 +91,16 @@ export default {
     return Object.keys(techniques);
   },
   selected: 'none',
-  addition: function(e) {
+  addition(e) {
     if (e.user && e.user > 0) techniques[this.selected].addition(e);
   },
-  removal: function(e) {
+  removal(e) {
     if (e.user && e.user > 0) techniques[this.selected].removal(e);
   },
-  updating: function(e) {
+  updating(e) {
     if (e.user && e.user > 0) techniques[this.selected].updating(e);
+  },
+  error(e) {
+    EventHub.$emit('error');
   },
 };

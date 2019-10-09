@@ -1,13 +1,23 @@
 <template>
   <div class="workspace">
     <svg width="100%" :height="height" @dragover="dragOver" @drop="drop">
-        <Button :x="15" :y="15" text="S" @click="simulate" />
-        <Button :x="15" :y="35" text="R" @click="run" />
-        <Link v-for="link in lines" v-bind:key="link.index"
-          :x1="link.x1" :y1="link.y1" :x2="link.x2" :y2="link.y2" />
-        <Artifact v-for="artifact in artifacts" :artifact="artifact"
-          v-bind:key="artifact.index"
-          @add="addArtifact" @remove="removeArtifact" />
+      <defs>
+        <filter id="focus" height="130%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="3"/> 
+          <feOffset dx="0" dy="0" result="offsetblur"/> 
+          <feMerge> 
+            <feMergeNode/>
+            <feMergeNode in="SourceGraphic"/> 
+          </feMerge>
+        </filter>
+      </defs>
+      <Button :x="15" :y="15" text="S" @click="simulate" />
+      <Button :x="15" :y="35" text="R" @click="run" />
+      <Link v-for="link in lines" v-bind:key="link.index"
+        :x1="link.x1" :y1="link.y1" :x2="link.x2" :y2="link.y2" />
+      <Artifact v-for="artifact in artifacts" :artifact="artifact"
+        v-bind:key="artifact.index"
+        @add="addArtifact" @remove="removeArtifact" />
     </svg>
     <pre><output>{{links}}</output></pre>
   </div>
@@ -20,6 +30,13 @@ import Button from './Button';
 import TestRunner from '../TestRunner';
 import Model from '../Model';
 import {session} from '../Session';
+
+const movements = {
+  'KeyA': 'left',
+  'KeyW': 'top',
+  'KeyD': 'right',
+  'KeyS': 'where',
+};
 
 export default {
   name: 'Workspace',
@@ -41,6 +58,9 @@ export default {
     },
   },
   methods: {
+    keyup(e) {
+      Model.moveFocus(movements[e.code]);
+    },
     run() {
       TestRunner.run({count: 2});
     },
@@ -82,6 +102,7 @@ export default {
     Artifact, Link, Button,
   },
   created() {
+    window.addEventListener('keyup', this.keyup);
     Model.add({name: 'ROOT', x: 100, y: 100});
     TestRunner.setup(this);
   },

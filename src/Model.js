@@ -9,6 +9,19 @@ export default {
   links: [
 
   ],
+  moveFocus(dir) {
+    const art = this.artifacts.find((a) => a.focused);
+    if (!art) return;
+    if (!(dir in {right: '->', top: '↑', left: '<-'})) return;
+    if (art[dir]) {
+      art.focused = false;
+      art[dir].focused = true;
+    } else {
+      // tocar som de impossível mover-se
+      Sonify.error();
+      // throw new Error('There is no object at right');
+    }
+  },
   find(id) {
     id = Number(id);
     if (isNaN(id)) return;
@@ -17,6 +30,12 @@ export default {
   add(newArtifact, fromId, user = 0) {
     const options = {user, pan: 0, distance: 1};
     newArtifact.id = _id++;
+
+    newArtifact.focused = this.artifacts.length === 0;
+    newArtifact.left = undefined;
+    newArtifact.right = undefined;
+    newArtifact.top = undefined;
+
     if (fromId !== undefined) {
       const from = this.find(fromId);
       if (!from.right) {
