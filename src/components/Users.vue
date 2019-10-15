@@ -13,11 +13,11 @@ export default {
   name: 'Users',
   data: function() {
     return {
-      session: session.state
+      session: session.state,
     };
   },
   computed: {
-    
+
   },
   methods: {
 

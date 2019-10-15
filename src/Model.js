@@ -12,7 +12,7 @@ export default {
   moveFocus(dir) {
     const art = this.artifacts.find((a) => a.focused);
     if (!art) return;
-    if (!(dir in {right: '->', top: '↑', left: '<-'})) return;
+    if (!(dir in {left: '<-', top: '↑', right: '->'})) return;
     if (art[dir]) {
       art.focused = false;
       art[dir].focused = true;
@@ -27,36 +27,48 @@ export default {
     if (isNaN(id)) return;
     return this.artifacts.find((a) => a.id === id);
   },
-  add(newArtifact, fromId, user = 0) {
-    const options = {user, pan: 0, distance: 1};
+  where(origin, target) {
+    this.artifacts.forEach((a) => delete a.visited);
+    return dfs(origin, target);
+  },
+  prepare(newArtifact) {
     newArtifact.id = _id++;
-
     newArtifact.focused = this.artifacts.length === 0;
     newArtifact.left = undefined;
     newArtifact.right = undefined;
     newArtifact.top = undefined;
-
-    if (fromId !== undefined) {
-      const from = this.find(fromId);
-      if (!from.right) {
-        from.right = newArtifact;
-        newArtifact.left = from;
-        options.pan = 1;
-      } else if (!from.left) {
-        from.left = newArtifact;
-        newArtifact.right = from;
-        options.pan = -1;
-      } else if (!from.top) {
-        from.top = newArtifact;
-        newArtifact.left = from;
-        options.pan = 0;
-      } else {
-        throw new Error('There is no direction where to put this new artifact');
-      }
-      this.links.push([fromId, newArtifact.id]);
+  },
+  link(newArtifact, fromId) {
+    const from = this.find(fromId);
+    if (!from.right) {
+      from.right = newArtifact;
+      newArtifact.left = from;
+      // options.pan = 1;
+    } else if (!from.left) {
+      from.left = newArtifact;
+      newArtifact.right = from;
+      // options.pan = -1;
+    } else if (!from.top) {
+      from.top = newArtifact;
+      newArtifact.left = from;
+      // options.pan = 0;
+    } else {
+      throw new Error('There is no direction where to put this new artifact');
     }
+    this.links.push([fromId, newArtifact.id]);
+  },
+  add(newArtifact, fromId, user = 0) {
+
+    this.prepare(newArtifact);
+    if (fromId !== undefined) this.link(newArtifact, fromId);
     this.artifacts.push(newArtifact);
+    
+    const focusedArtifact = this.artifacts.find((a) => a.focused);
+    const where = this.where(focusedArtifact, newArtifact);
+    const options = {user, pan: where.dir, distance: where.count};
+    console.log(options);
     Sonify.addition(options);
+    
   },
   remove(id, user = 0) {
     const options = {user, pan: 0, distance: 1};
@@ -89,3 +101,23 @@ export default {
     }
   },
 };
+
+function dfs(origin, target, count = 0) {
+  if (origin.visited) return {count};
+  origin.visited = true;
+  if (origin === target) return {count};
+  const r = {right: 100, left: 100, top: 100};
+  if (origin.right && !origin.right.visited) {
+    r.right = dfs(origin.right, target, count + 1)['count'];
+  }
+  if (origin.left && !origin.left.visited) {
+    r.left = dfs(origin.left, target, count + 1)['count'];
+  }
+  if (origin.top && !origin.top.visited) {
+    r.top = dfs(origin.top, target, count + 1)['count'];
+  }
+  return {
+    count: Math.min(r.left, r.right, r.top),
+    dir: (r.right < r.left && r.top ? 1 : (r.top < r.left ? 0 : -1)),
+  };
+}

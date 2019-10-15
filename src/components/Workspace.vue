@@ -3,11 +3,11 @@
     <svg width="100%" :height="height" @dragover="dragOver" @drop="drop">
       <defs>
         <filter id="focus" height="130%">
-          <feGaussianBlur in="SourceAlpha" stdDeviation="3"/> 
-          <feOffset dx="0" dy="0" result="offsetblur"/> 
-          <feMerge> 
+          <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+          <feOffset dx="0" dy="0" result="offsetblur"/>
+          <feMerge>
             <feMergeNode/>
-            <feMergeNode in="SourceGraphic"/> 
+            <feMergeNode in="SourceGraphic"/>
           </feMerge>
         </filter>
       </defs>
