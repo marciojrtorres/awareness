@@ -65,13 +65,12 @@ export default {
     
     const focusedArtifact = this.artifacts.find((a) => a.focused);
     const where = this.where(focusedArtifact, newArtifact);
-    const options = {user, pan: where.dir, distance: where.count};
-    console.log(options);
-    Sonify.addition(options);
-    
+    const options = {action: 'addition', user, pan: where.dir, distance: where.count};
+    // console.log(options);
+    Sonify.play(options);
   },
   remove(id, user = 0) {
-    const options = {user, pan: 0, distance: 1};
+    const options = {action: 'removal', user, pan: 0, distance: 1};
     const index = this.artifacts.findIndex((a) => a.id == id);
     if (index >= 0) {
       let linkIndex = -1;
@@ -83,7 +82,7 @@ export default {
         this.links.splice(linkIndex, 1);
       }
       this.artifacts.splice(index, 1);
-      Sonify.removal(options);
+      Sonify.play(options);
     }
   },
   _dereference(fromId, destId) {
