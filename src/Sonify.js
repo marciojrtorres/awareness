@@ -63,8 +63,14 @@ const techniques = {
     updating(e) {
 
     },
+    error(e) {
+      EventHub.$emit('error');
+    },
   },
   speech: {
+    play(e) {
+      this[e.action](e);
+    },
     addition(e) { // {user: int, dir: {nodes: [], pan: int}}
       const direcao = ['esquerda', 'frente', 'direita'][e.pan + 1];
       const msg = `artefato adicionado à ${direcao}`;
@@ -76,12 +82,16 @@ const techniques = {
     removal(e) {
       const direcao = ['esquerda', 'frente', 'direita'][e.pan + 1];
       const msg = `artefato removido à ${direcao}`;
-      const utter = new SpeechSynthesisUtterance(msg);
+      const utter = 
       utter.volume = 1.0 - (0.2 * (e.distance - 2));
       utter.rate = rate;
+      synth.speak(utter);
     },
     updating(e) {
       alert('speaking! ' + JSON.stringify(e));
+    },
+    error(e) {
+      synth.speak(new SpeechSynthesisUtterance("error"));
     },
   },
 };
@@ -91,16 +101,7 @@ export default {
     return Object.keys(techniques);
   },
   selected: 'none',
-  addition(e) {
-    if (e.user && e.user > 0) techniques[this.selected].addition(e);
-  },
-  removal(e) {
-    if (e.user && e.user > 0) techniques[this.selected].removal(e);
-  },
-  updating(e) {
-    if (e.user && e.user > 0) techniques[this.selected].updating(e);
-  },
-  error(e) {
-    EventHub.$emit('error');
+  play(e) {
+    techniques[this.selected][e.action](e);
   },
 };
