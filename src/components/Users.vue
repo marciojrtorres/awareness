@@ -1,7 +1,7 @@
 <template>
   <div class="users">
-    <User v-for="u in session.users" :id="u.id" :name="u.name" :instrument="u.instrument"
-          v-bind:key="u.index" />
+    <User v-for="u in session.users" :id="u.id" :name="u.name"
+      :instrument="u.instrument" v-bind:key="u.index" />
   </div>
 </template>
 

@@ -1,4 +1,6 @@
 /* eslint-disable no-console */
+/* eslint-disable require-jsdoc */
+
 import Sonify from './Sonify';
 
 let _id = 0;
@@ -17,9 +19,8 @@ export default {
       art.focused = false;
       art[dir].focused = true;
     } else {
-      // tocar som de impossível mover-se
-      Sonify.error();
-      // throw new Error('There is no object at right');
+      Sonify.play({action: 'error',
+        description: 'Não há objetos nesta direção'});
     }
   },
   find(id) {
@@ -58,15 +59,14 @@ export default {
     this.links.push([fromId, newArtifact.id]);
   },
   add(newArtifact, fromId, user = 0) {
-
     this.prepare(newArtifact);
     if (fromId !== undefined) this.link(newArtifact, fromId);
     this.artifacts.push(newArtifact);
-    
+
     const focusedArtifact = this.artifacts.find((a) => a.focused);
     const where = this.where(focusedArtifact, newArtifact);
-    const options = {action: 'addition', user, pan: where.dir, distance: where.count};
-    // console.log(options);
+    const options = {action: 'addition', user,
+      pan: where.dir, distance: where.count};
     Sonify.play(options);
   },
   remove(id, user = 0) {

@@ -23,12 +23,12 @@ export default {
     CreateJS.Sound.activePlugin.context.resume();
     EventHub.$on('sample', (instrument) => {
       this.play({instrument, note: 'E3', delay: 0});
-      this.play({instrument, note: 'E3', delay: 200});
+      /*this.play({instrument, note: 'E3', delay: 200});
       this.play({instrument, note: 'E3', delay: 400});
       this.play({instrument, note: 'C3', delay: 600});
       this.play({instrument, note: 'E3', delay: 850});
       this.play({instrument, note: 'G3', delay: 1050});
-      this.play({instrument, note: 'G2', delay: 1300});
+      this.play({instrument, note: 'G2', delay: 1300});*/
     });
     EventHub.$on('play', (params) => {
       this.play(params);

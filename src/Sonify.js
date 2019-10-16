@@ -66,6 +66,15 @@ const techniques = {
     error(e) {
       EventHub.$emit('error');
     },
+    test(e) {
+      EventHub.$emit('play', {
+        instrument: session.currentUser.instrument,
+        note: 'C4',
+        volume: 0.7,
+        pan: 0,
+        delay: 0,
+      });
+    },
   },
   speech: {
     play(e) {
@@ -82,7 +91,7 @@ const techniques = {
     removal(e) {
       const direcao = ['esquerda', 'frente', 'direita'][e.pan + 1];
       const msg = `artefato removido à ${direcao}`;
-      const utter = 
+      const utter = new SpeechSynthesisUtterance(msg);
       utter.volume = 1.0 - (0.2 * (e.distance - 2));
       utter.rate = rate;
       synth.speak(utter);
@@ -91,7 +100,16 @@ const techniques = {
       alert('speaking! ' + JSON.stringify(e));
     },
     error(e) {
-      synth.speak(new SpeechSynthesisUtterance("error"));
+      const msg = e.description;
+      const utter = new SpeechSynthesisUtterance(msg);
+      utter.rate = rate;
+      synth.speak(utter);
+    },
+    test(e) {
+      const msg = 'Fala ativada!';
+      const utter = new SpeechSynthesisUtterance(msg);
+      utter.rate = rate;
+      synth.speak(utter)
     },
   },
 };

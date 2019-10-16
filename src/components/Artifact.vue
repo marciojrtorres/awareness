@@ -6,7 +6,8 @@
       text="x" @click="removeArtifact" />
     <Button :x="artifact.x + 110" :y="artifact.y + 70"
       text="+" @click="addProperty" />
-    <rect :x="artifact.x" :y="artifact.y" :filter="artifact.focused ? 'url(#focus)' : ''"
+    <rect :x="artifact.x" :y="artifact.y"
+      :filter="artifact.focused ? 'url(#focus)' : ''"
       width="100" height="80" :class="['body', `user_${artifact.user}`]" />
     <rect :x="artifact.x" :y="artifact.y"
       width="100" height="20" class="header" />

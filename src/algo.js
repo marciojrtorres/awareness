@@ -1,3 +1,5 @@
+/* eslint-disable require-jsdoc, no-console */
+
 function where(origin, target, count = 0) {
   if (origin.visited) return {count};
   origin.visited = true;
