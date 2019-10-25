@@ -2,13 +2,23 @@ export const session = {
   state: {
     users: [
       {
-        id: 0, name: 'Me', instrument: 'me',
+        id: 0,
+        name: 'Me',
+        instrument: 'none',
       },
       {
-        id: 1, name: 'Jane', instrument: 'piano',
+        id: 1,
+        name: 'Jane',
+        instrument: 'piano',
+        recordings: {
+        },
       },
       {
-        id: 2, name: 'Peter', instrument: 'guitar',
+        id: 2,
+        name: 'Peter',
+        instrument: 'guitar',
+        recordings: {
+        },
       },
     ],
     selected: 0,

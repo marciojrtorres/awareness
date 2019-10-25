@@ -28,15 +28,19 @@ export default {
   },
   remove(user, n) {
     console.log('removing');
-    const index = parseInt(Math.random() * this.workspace.artifacts.length);
-    const source = this.workspace.artifacts[index];
-    this.workspace.removeArtifact({source});
-    this.next(n);
+    if (this.workspace.artifacts.length > 0) {
+      const index = parseInt(Math.random() * this.workspace.artifacts.length);
+      const source = this.workspace.artifacts[index];
+      this.workspace.removeArtifact({source, user});
+      this.next(n);
+    } else {
+      this.next(n - 1); // repeat
+    }
   },
   add(user, n) {
     console.log('adding');
     const source = this.workspace.artifacts[0];
-    this.workspace.addArtifact({source});
+    this.workspace.addArtifact({source, user});
     this.next(n);
   },
   next(n) {

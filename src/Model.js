@@ -70,9 +70,16 @@ export default {
     Sonify.play(options);
   },
   remove(id, user = 0) {
-    const options = {action: 'removal', user, pan: 0, distance: 1};
     const index = this.artifacts.findIndex((a) => a.id == id);
     if (index >= 0) {
+      const focusedArtifact = this.artifacts.find((a) => a.focused);
+      const toBeRemovedArtifact = this.find(id);
+      const where = this.where(focusedArtifact, toBeRemovedArtifact);
+      const options = {
+        action: 'removal', user,
+        pan: where.dir, distance: where.count,
+      };
+      Sonify.play(options);
       let linkIndex = -1;
       while ((linkIndex = this.links.findIndex((link) =>
         link[0] === id || link[1] === id)) >= 0) {
@@ -82,7 +89,6 @@ export default {
         this.links.splice(linkIndex, 1);
       }
       this.artifacts.splice(index, 1);
-      Sonify.play(options);
     }
   },
   _dereference(fromId, destId) {

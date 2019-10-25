@@ -65,7 +65,7 @@ export default {
       TestRunner.run({count: 2});
     },
     simulate() {
-      TestRunner.run({count: 2, evaluate: false});
+      TestRunner.run({count: 5, evaluate: false});
     },
     dragOver(e) {
       e.preventDefault();
@@ -79,7 +79,8 @@ export default {
       if (art) [art.x, art.y] = [art.x + (e.x - x), art.y + (e.y - y)];
     },
     removeArtifact(e) {
-      Model.remove(e.source.id, session.state.selected);
+      const userId = session.state.selected || e.user;
+      Model.remove(e.source.id, userId);
     },
     addArtifact(e) {
       const art = e.add || {
@@ -88,10 +89,8 @@ export default {
         y: e.source.y + 100,
       };
       const fromId = e.source.id;
-      Model.add(art, fromId, session.state.selected);
-      // alternating users
-      // const index = e.user || parseInt(Math.random() * 2);
-      // EventHub.$emit('sample', users[index].instrument);
+      const userId = session.state.selected || e.user;
+      Model.add(art, fromId, userId);
     },
   },
   props: {

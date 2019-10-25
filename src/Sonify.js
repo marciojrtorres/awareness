@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import EventHub from './EventHub';
 import {session} from './Session';
 
@@ -109,7 +111,17 @@ const techniques = {
       const msg = 'Fala ativada!';
       const utter = new SpeechSynthesisUtterance(msg);
       utter.rate = rate;
-      synth.speak(utter)
+      synth.speak(utter);
+    },
+  },
+  recorded: {
+    test(e) {
+      const user = session.currentUser.name.toLocaleLowerCase();
+      const path = `/recordings/${user}/greeting.mp3`;
+      const audio = new Audio(path);
+      audio.play().catch((e) => {
+        console.error(e);
+      });
     },
   },
 };
@@ -120,6 +132,7 @@ export default {
   },
   selected: 'none',
   play(e) {
-    techniques[this.selected][e.action](e);
+    const tech = techniques[this.selected];
+    if (e.action in tech) tech[e.action](e);
   },
 };
