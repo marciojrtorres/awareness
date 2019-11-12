@@ -15,8 +15,8 @@ const techniques = {
   abstract: {
     addition(e) {
       EventHub.$emit('play', {
-        // instrument: Session.users[e.user].instrument,
-        instrument: session.currentUser.instrument,
+        // instrument: session.currentUser.instrument,
+        instrument: session.instrument(e.user),
         note: 'C3',
         // volume: 1.0 - (0.2 * (e.dir.nodes.length - 2)),
         volume: 1.0 - (0.2 * (e.distance - 2)),
@@ -25,14 +25,14 @@ const techniques = {
         delay: 0,
       });
       EventHub.$emit('play', {
-        instrument: session.currentUser.instrument,
+        instrument: session.instrument(e.user),
         note: 'E3',
         volume: 1.0 - (0.2 * (e.distance - 2)),
         pan: e.pan,
         delay: 100,
       });
       EventHub.$emit('play', {
-        instrument: session.currentUser.instrument,
+        instrument: session.instrument(e.user),
         note: 'G3',
         volume: 1.0 - (0.2 * (e.distance - 2)),
         pan: e.pan,

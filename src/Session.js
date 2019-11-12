@@ -26,6 +26,9 @@ export const session = {
   select(id) {
     this.state.selected = id;
   },
+  instrument(id) {
+    return this.state.users[id].instrument;
+  },
   get currentUser() {
     return this.state.users.find((u) => u.id === this.state.selected);
   },

@@ -9,7 +9,6 @@ export default {
   artifacts: [
   ],
   links: [
-
   ],
   moveFocus(dir) {
     const art = this.artifacts.find((a) => a.focused);

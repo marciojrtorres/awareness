@@ -11,7 +11,7 @@
           </feMerge>
         </filter>
       </defs>
-      <Button :x="15" :y="15" text="S" @click="simulate" />
+      <Button :x="15" :y="15" text="S" @click="step" />
       <Button :x="15" :y="35" text="R" @click="run" />
       <Link v-for="link in lines" v-bind:key="link.index"
         :x1="link.x1" :y1="link.y1" :x2="link.x2" :y2="link.y2" />
@@ -62,10 +62,10 @@ export default {
       Model.moveFocus(movements[e.code]);
     },
     run() {
-      TestRunner.run({count: 2});
+      TestRunner.run({count: 3, evaluate: false});
     },
-    simulate() {
-      TestRunner.run({count: 5, evaluate: false});
+    step() {
+      TestRunner.run({count: 10, evaluate: true});
     },
     dragOver(e) {
       e.preventDefault();

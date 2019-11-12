@@ -22,19 +22,18 @@ export default {
   },
   loop(n = 10) {
     if (n === 0) return;
-    const randomUser = Math.random() > 0.5 ? 1 : 0;
+    const randomUser = Math.random() > 0.5 ? 2 : 1;
     const randomAction = Math.random() > 0.4 ? this.add : this.remove;
     randomAction.call(this, randomUser, n);
   },
   remove(user, n) {
-    console.log('removing');
-    if (this.workspace.artifacts.length > 0) {
+    if (this.workspace.artifacts.length > 1) { // do not remove 'til the last element
       const index = parseInt(Math.random() * this.workspace.artifacts.length);
       const source = this.workspace.artifacts[index];
       this.workspace.removeArtifact({source, user});
       this.next(n);
     } else {
-      this.next(n - 1); // repeat
+      this.loop(n); // repeat
     }
   },
   add(user, n) {
@@ -44,14 +43,26 @@ export default {
     this.next(n);
   },
   next(n) {
-    setTimeout(() => {
-      if (this.options.evaluate) {
-        this.check(() => {
+    question(() => {  
+      setTimeout(() => {
+        if (this.options.evaluate) {
+          this.check(() => {
+            this.loop(n - 1);
+          });
+        } else {
           this.loop(n - 1);
-        });
-      } else {
-        this.loop(n - 1);
-      }
-    }, this.options.interval);
+        }
+      }, this.options.interval);
+    });
   },
 };
+
+const synth = window.speechSynthesis;
+
+function question(ok) {
+  // const msg = `Direção`;
+  // const utter = new SpeechSynthesisUtterance(msg);
+  // synth.speak(utter);
+  // let r = prompt('direção?');
+  ok();
+}
