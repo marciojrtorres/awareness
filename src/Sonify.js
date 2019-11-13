@@ -134,5 +134,11 @@ export default {
   play(e) {
     const tech = techniques[this.selected];
     if (e.action in tech) tech[e.action](e);
+    else console.error(`Action ${e.action} not found in ${this.selected}`);
+  },
+  speech(msg) {
+    const utter = new SpeechSynthesisUtterance(msg);
+    utter.rate = rate;
+    synth.speak(utter);
   },
 };

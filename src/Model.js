@@ -6,10 +6,30 @@ import Sonify from './Sonify';
 let _id = 0;
 
 export default {
-  artifacts: [
-  ],
-  links: [
-  ],
+  artifacts: [],
+  links: [],
+  action(action) {
+    const art = this.artifacts.find((a) => a.focused);
+    if (art) {
+      if ('rename' === action) {
+        const msg = 'Digite o novo nome e tecle enter para confirmar '
+                  + 'ou esc para cancelar';
+        Sonify.speech(msg);
+        const newName = prompt('Novo nome:');
+        if (newName) {
+          const oldName = art.name;
+          art.name = newName;
+          Sonify.speech(`Tabela renomeada de ${oldName} para ${newName}`);
+        }
+      }
+    } else {
+      Sonify.play({action: 'error',
+        description: 'Não há objeto selecionado'});
+    }
+  },
+  helpWith(topic) {
+
+  },
   moveFocus(dir) {
     const art = this.artifacts.find((a) => a.focused);
     if (!art) return;
@@ -17,6 +37,7 @@ export default {
     if (art[dir]) {
       art.focused = false;
       art[dir].focused = true;
+      Sonify.speech(`Tabela ${art[dir].name}`);
     } else {
       Sonify.play({action: 'error',
         description: 'Não há objetos nesta direção'});

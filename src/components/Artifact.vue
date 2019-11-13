@@ -1,5 +1,5 @@
 <template>
-  <g class="artifact" draggable="true" @dragstart="drag">
+  <g class="artifact" draggable="true" @dragstart="drag" @dblclick="rename">
     <Button :x="artifact.x + 110" :y="artifact.y + 10"
       text=">" @click="addArtifact" />
     <Button :x="artifact.x + 110" :y="artifact.y + 30"
@@ -28,6 +28,10 @@ import Button from './Button';
 export default {
   name: 'Artifact',
   methods: {
+    rename() {
+      const artifact = this.artifact;
+      this.$emit('rename', {source: artifact});
+    },
     addArtifact() {
       const artifact = this.artifact;
       this.$emit('add', {source: artifact});

@@ -16,7 +16,7 @@
       <Link v-for="link in lines" v-bind:key="link.index"
         :x1="link.x1" :y1="link.y1" :x2="link.x2" :y2="link.y2" />
       <Artifact v-for="artifact in artifacts" :artifact="artifact"
-        v-bind:key="artifact.index"
+        v-bind:key="artifact.index" @rename="renameArtifact"
         @add="addArtifact" @remove="removeArtifact" />
     </svg>
     <pre><output>{{links}}</output></pre>
@@ -31,11 +31,18 @@ import TestRunner from '../TestRunner';
 import Model from '../Model';
 import {session} from '../Session';
 
-const movements = {
-  'KeyA': 'left',
-  'KeyW': 'top',
-  'KeyD': 'right',
-  'KeyS': 'where',
+const keyboard = {
+  movements: {
+    'KeyA': 'left',
+    'KeyW': 'top',
+    'KeyD': 'right'
+  },
+  help: {
+    'KeyS': 'where',
+  },
+  action: {
+    'KeyR': 'rename',
+  }
 };
 
 export default {
@@ -59,7 +66,15 @@ export default {
   },
   methods: {
     keyup(e) {
-      Model.moveFocus(movements[e.code]);
+      if (e.code in keyboard.movements) {
+        Model.moveFocus(keyboard.movements[e.code]);
+      }
+      if (e.code in keyboard.help) {
+        Model.helpWith(keyboard.help[e.code]);
+      }
+      if (e.code in keyboard.action) {
+        Model.action(keyboard.action[e.code]);
+      }
     },
     run() {
       TestRunner.run({count: 3, evaluate: false});
@@ -78,13 +93,19 @@ export default {
       const art = Model.find(id);
       if (art) [art.x, art.y] = [art.x + (e.x - x), art.y + (e.y - y)];
     },
+    renameArtifact(e) {
+      const userId = session.state.selected || e.user;
+      const artifactId = e.source.id;
+      // Model.rename(artifactId, newName, userId);
+      alert('rename');
+    },
     removeArtifact(e) {
       const userId = session.state.selected || e.user;
       Model.remove(e.source.id, userId);
     },
     addArtifact(e) {
       const art = e.add || {
-        name: `New Artifact`,
+        name: `Nova`,
         x: e.source.x + 100,
         y: e.source.y + 100,
       };
@@ -102,7 +123,7 @@ export default {
   },
   created() {
     window.addEventListener('keyup', this.keyup);
-    Model.add({name: 'ROOT', x: 100, y: 100});
+    Model.add({name: 'Raiz', x: 100, y: 100});
     TestRunner.setup(this);
   },
 };
