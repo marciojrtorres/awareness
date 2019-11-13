@@ -32,7 +32,7 @@ export default {
     });
   },
   sample() {
-
+    CreateJS.Sound.play(`${instrument}|${note}`, options);
   },
   error() {
     error.play();
@@ -169,4 +169,6 @@ function registerSounds(callback) {
   CreateJS.Sound.registerSound('./tones/piano/Gs4.mp3', 'piano|Gs4');
   CreateJS.Sound.registerSound('./tones/piano/Gs5.mp3', 'piano|Gs5');
   CreateJS.Sound.registerSound('./tones/piano/Gs6.mp3', 'piano|Gs6');
+
+  CreateJS.Sound.registerSound('./tones/flute/C4.mp3', 'flute|C4');
 }

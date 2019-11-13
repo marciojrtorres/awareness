@@ -43,7 +43,7 @@ export default {
     this.next(n);
   },
   next(n) {
-    question(() => {  
+    question(() => {
       setTimeout(() => {
         if (this.options.evaluate) {
           this.check(() => {
@@ -60,9 +60,7 @@ export default {
 const synth = window.speechSynthesis;
 
 function question(ok) {
-  // const msg = `Direção`;
-  // const utter = new SpeechSynthesisUtterance(msg);
-  // synth.speak(utter);
-  // let r = prompt('direção?');
-  ok();
+  setTimeout(() => {
+    const x = prompt('(E,D,F)|(C,A)|(3)|(A|E|A)');
+  }, 1000);
 }
