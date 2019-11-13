@@ -1,9 +1,10 @@
 /* eslint-disable require-jsdoc */
 import CreateJS from './CreateJS.js';
 import EventHub from './EventHub.js';
-import {ERROR_SOUND_BASE64_DATA} from './Sounds.js';
+import {ERROR_SOUND_BASE64_DATA, ERROR_SOUND_2_BASE64_DATA} from './Sounds.js';
 
 const error = new Audio(ERROR_SOUND_BASE64_DATA);
+const error2 = new Audio(ERROR_SOUND_2_BASE64_DATA);
 
 export default {
   play({instrument, note, volume = 1, pan = 0, delay = 0}) {
@@ -32,10 +33,10 @@ export default {
     });
   },
   sample() {
-    CreateJS.Sound.play(`${instrument}|${note}`, options);
+    CreateJS.Sound.play(`flute|C4`, {duration: 1000});
   },
   error() {
-    error.play();
+    error2.play();
   },
 };
 
