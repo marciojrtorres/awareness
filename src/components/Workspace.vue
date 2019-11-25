@@ -16,7 +16,7 @@
       <Link v-for="link in lines" v-bind:key="link.index"
         :x1="link.x1" :y1="link.y1" :x2="link.x2" :y2="link.y2" />
       <Artifact v-for="artifact in artifacts" :artifact="artifact"
-        v-bind:key="artifact.index" @rename="renameArtifact"
+        v-bind:key="artifact.index" @rename="alterArtifact"
         @add="addArtifact" @remove="removeArtifact" />
     </svg>
     <pre><output>{{links}}</output></pre>
@@ -35,14 +35,14 @@ const keyboard = {
   movements: {
     'KeyA': 'left',
     'KeyW': 'top',
-    'KeyD': 'right'
+    'KeyD': 'right',
   },
   help: {
     'KeyS': 'where',
   },
   action: {
     'KeyR': 'rename',
-  }
+  },
 };
 
 export default {
@@ -93,11 +93,10 @@ export default {
       const art = Model.find(id);
       if (art) [art.x, art.y] = [art.x + (e.x - x), art.y + (e.y - y)];
     },
-    renameArtifact(e) {
+    alterArtifact(e) {
       const userId = session.state.selected || e.user;
-      const artifactId = e.source.id;
-      // Model.rename(artifactId, newName, userId);
-      alert('rename');
+      const options = {newName: e.newName};
+      Model.alter(e.source.id, userId, options);
     },
     removeArtifact(e) {
       const userId = session.state.selected || e.user;
@@ -105,7 +104,7 @@ export default {
     },
     addArtifact(e) {
       const art = e.add || {
-        name: `Nova`,
+        name: e.name || 'Nova',
         x: e.source.x + 100,
         y: e.source.y + 100,
       };

@@ -78,6 +78,13 @@ export default {
     }
     this.links.push([fromId, newArtifact.id]);
   },
+  alter(id, user = 0, options) {
+    const index = this.artifacts.findIndex((a) => a.id == id);
+    if (index >= 0) {
+      const beingAltered = this.find(id);
+      beingAltered.name = options.newName || 'Sem nome';
+    }
+  },
   add(newArtifact, fromId, user = 0) {
     this.prepare(newArtifact);
     if (fromId !== undefined) this.link(newArtifact, fromId);
