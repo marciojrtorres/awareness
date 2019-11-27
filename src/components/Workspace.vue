@@ -16,7 +16,7 @@
       <Link v-for="link in lines" v-bind:key="link.index"
         :x1="link.x1" :y1="link.y1" :x2="link.x2" :y2="link.y2" />
       <Artifact v-for="artifact in artifacts" :artifact="artifact"
-        v-bind:key="artifact.index" @rename="alterArtifact"
+        v-bind:key="artifact.index" @alter="alterArtifact"
         @add="addArtifact" @remove="removeArtifact" />
     </svg>
     <pre><output>{{links}}</output></pre>
@@ -31,17 +31,21 @@ import TestRunner from '../TestRunner';
 import Model from '../Model';
 import {session} from '../Session';
 
-const keyboard = {
+const keymap = {
   movements: {
     'KeyA': 'left',
     'KeyW': 'top',
     'KeyD': 'right',
   },
   help: {
-    'KeyS': 'where',
+    'F1': 'general',
   },
   action: {
     'KeyR': 'rename',
+    'KeyS': 'follow',
+    'Space': 'describe',
+    'KeyC': 'connections',
+    'KeyV': 'neighbors',
   },
 };
 
@@ -66,14 +70,15 @@ export default {
   },
   methods: {
     keyup(e) {
-      if (e.code in keyboard.movements) {
-        Model.moveFocus(keyboard.movements[e.code]);
+      console.log(e.code);
+      if (e.code in keymap.movements) {
+        Model.moveFocus(keymap.movements[e.code]);
       }
-      if (e.code in keyboard.help) {
-        Model.helpWith(keyboard.help[e.code]);
+      if (e.code in keymap.help) {
+        Model.helpWith(keymap.help[e.code]);
       }
-      if (e.code in keyboard.action) {
-        Model.action(keyboard.action[e.code]);
+      if (e.code in keymap.action) {
+        Model.action(keymap.action[e.code]);
       }
     },
     run() {
@@ -105,7 +110,7 @@ export default {
     addArtifact(e) {
       const art = e.add || {
         name: e.name || 'Nova',
-        x: e.source.x + 100,
+        x: e.source.x + (e.source.step ? (++e.source.step * 120) : ((e.source.step = 1)* 120)),
         y: e.source.y + 100,
       };
       const fromId = e.source.id;
@@ -121,8 +126,9 @@ export default {
     Artifact, Link, Button,
   },
   created() {
+    window.removeEventListener('keyup', this.keyup);
     window.addEventListener('keyup', this.keyup);
-    Model.add({name: 'Raiz', x: 100, y: 100});
+    Model.add({name: 'Raiz', x: 100, y: 10});
     TestRunner.setup(this);
   },
 };

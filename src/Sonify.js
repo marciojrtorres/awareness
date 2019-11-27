@@ -2,40 +2,47 @@
 
 import EventHub from './EventHub';
 import {session} from './Session';
+import {log} from 'util';
 
 const synth = window.speechSynthesis;
 const rate = 1.5;
+const volume = [1.00, 0.60, 0.24, 0.10];
+// distance 1 + 1 / 2 = 1
+// distance 2 + 1 / 2 = 1
+// distance 3 + 1 / 2 = 2
+// distance 4 + 1 / 2 = 2
 
 const techniques = {
   none: {
     addition: () => {},
     removal: () => {},
     updating: () => {},
+    error: () => { /* error swallowing */}
   },
   abstract: {
     addition(e) {
       EventHub.$emit('play', {
-        // instrument: session.currentUser.instrument,
         instrument: session.instrument(e.user),
         note: 'C3',
-        // volume: 1.0 - (0.2 * (e.dir.nodes.length - 2)),
-        volume: 1.0 - (0.2 * (e.distance - 2)),
-        // pan: e.dir.pan,
-        pan: e.pan,
+        // volume: 1.0 - (0.2 * (e.distance - 2)),
+        volume: volume[Number.parseInt((e.distance + 1) / 2)] || 0.1,
+        pan: e.pan || 0,
         delay: 0,
       });
-      EventHub.$emit('play', {
-        instrument: session.instrument(e.user),
-        note: 'E3',
-        volume: 1.0 - (0.2 * (e.distance - 2)),
-        pan: e.pan,
-        delay: 100,
-      });
+      if (!e.distance || e.distance < 1) {
+        EventHub.$emit('play', {
+            instrument: session.instrument(e.user),
+            note: 'E3',
+            volume: 1.0 - (0.2 * (e.distance - 2)),
+            pan: e.pan,
+            delay: 100,
+        });
+      }
       EventHub.$emit('play', {
         instrument: session.instrument(e.user),
         note: 'G3',
-        volume: 1.0 - (0.2 * (e.distance - 2)),
-        pan: e.pan,
+        volume: volume[Number.parseInt((e.distance + 1) / 2)] || 0.1,
+        pan: e.pan || 0,
         delay: 200,
       });
     },
@@ -43,27 +50,33 @@ const techniques = {
       EventHub.$emit('play', {
         instrument: session.currentUser.instrument,
         note: 'C3',
-        volume: 1.0 - (0.2 * (e.distance - 2)),
+        volume: volume[Number.parseInt((e.distance + 1) / 2)] || 0.1,
         pan: e.pan,
         delay: 200,
       });
-      EventHub.$emit('play', {
-        instrument: session.currentUser.instrument,
-        note: 'E3',
-        volume: 1.0 - (0.2 * (e.distance - 2)),
-        pan: e.pan,
-        delay: 100,
-      });
+      // EventHub.$emit('play', {
+      //   instrument: session.currentUser.instrument,
+      //   note: 'E3',
+      //   volume: 1.0 - (0.2 * (e.distance - 2)),
+      //   pan: e.pan,
+      //   delay: 100,
+      // });
       EventHub.$emit('play', {
         instrument: session.currentUser.instrument,
         note: 'G3',
-        volume: 1.0 - (0.2 * (e.distance - 2)),
+        volume: volume[Number.parseInt((e.distance + 1) / 2)] || 0.1,
         pan: e.pan,
         delay: 0,
       });
     },
     updating(e) {
-
+      EventHub.$emit('play', {
+        instrument: session.instrument(e.user),
+        note: 'C3',
+        volume: volume[Number.parseInt((e.distance + 1) / 2)] || 0.1,
+        pan: e.pan,
+        delay: 0,
+      });
     },
     error(e) {
       EventHub.$emit('error');
@@ -76,6 +89,13 @@ const techniques = {
         pan: 0,
         delay: 0,
       });
+      EventHub.$emit('play', {
+        instrument: session.instrument(e.user),
+        note: 'G3',
+        volume: 1.0 - (0.2 * (e.distance - 2)),
+        pan: e.pan,
+        delay: 0,
+      });
     },
   },
   speech: {
@@ -83,23 +103,34 @@ const techniques = {
       this[e.action](e);
     },
     addition(e) { // {user: int, dir: {nodes: [], pan: int}}
-      const direcao = ['esquerda', 'frente', 'direita'][e.pan + 1];
-      const msg = `artefato adicionado à ${direcao}`;
+      const direction = ['esquerda', 'frente', 'direita'][e.pan + 1];
+      const username = session.user(e.user).name;
+      const msg = e.distance && e.distance > 0 ?
+        `${username} incluiu tabela à ${direction}` :
+        `${username} incluiu esta tabela`;
       const utter = new SpeechSynthesisUtterance(msg);
-      utter.volume = 1.0 - (0.2 * (e.distance - 2));
+      utter.volume = volume[Number.parseInt((e.distance + 1) / 2)] || 0.1,
       utter.rate = rate;
       synth.speak(utter);
     },
     removal(e) {
-      const direcao = ['esquerda', 'frente', 'direita'][e.pan + 1];
-      const msg = `artefato removido à ${direcao}`;
+      const direction = ['esquerda', 'frente', 'direita'][e.pan + 1];
+      const username = session.user(e.user).name;
+      const msg = `${username} excluiu tabela à ${direction}`;
       const utter = new SpeechSynthesisUtterance(msg);
-      utter.volume = 1.0 - (0.2 * (e.distance - 2));
+      utter.volume = volume[Number.parseInt((e.distance + 1) / 2)] || 0.1,
       utter.rate = rate;
       synth.speak(utter);
     },
     updating(e) {
-      alert('speaking! ' + JSON.stringify(e));
+      const direction = ['esquerda', 'frente', 'direita'][e.pan + 1];
+      const username = session.user(e.user).name;
+      const msg = `${username} alterou ${e.distance > 0 ? 'uma' : 'esta'} tabela`
+        + (e.distance > 0 ? ` à ${direction}` : '');
+      const utter = new SpeechSynthesisUtterance(msg);
+      utter.volume = volume[Number.parseInt((e.distance + 1) / 2)] || 0.1,
+      utter.rate = rate;
+      synth.speak(utter);
     },
     error(e) {
       const msg = e.description;

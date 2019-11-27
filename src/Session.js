@@ -3,25 +3,28 @@ export const session = {
     users: [
       {
         id: 0,
-        name: 'Me',
+        name: 'Eu',
         instrument: 'none',
       },
       {
         id: 1,
-        name: 'Jane',
+        name: 'Marcio',
         instrument: 'piano',
         recordings: {
         },
       },
       {
         id: 2,
-        name: 'Peter',
+        name: 'Regina',
         instrument: 'guitar',
         recordings: {
         },
       },
     ],
     selected: 0,
+  },
+  user(id) {
+    return this.state.users[id];
   },
   select(id) {
     this.state.selected = id;

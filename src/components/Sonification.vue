@@ -23,7 +23,7 @@ export default {
     selectSonificationTechnique(e) {
       this.sel = e.target.dataset['value'];
       Sonify.selected = this.sel;
-      Sonify.play({action: 'test'});
+      // Sonify.play({action: 'test'});
     },
   },
   filters: {

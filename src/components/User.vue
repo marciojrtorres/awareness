@@ -1,5 +1,5 @@
 <template>
-  <div class="user" @click="play">
+  <div class="user" @click="select">
     <div :class="instrument"></div>
     <p :class="{selected: state.selected === id}">{{name}}</p>
   </div>
@@ -20,9 +20,9 @@ export default {
 
   },
   methods: {
-    play() {
+    select() {
       session.select(this.id);
-      EventHub.$emit('sample', this.instrument);
+      // EventHub.$emit('sample', this.instrument);
     },
   },
   props: {
