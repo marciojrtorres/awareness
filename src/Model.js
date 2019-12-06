@@ -73,6 +73,13 @@ export default {
         Sonify.speech(c);
       });
     }
+
+    if ('increase_speech_rate' === action) {
+      Sonify.increaseSpeechRate();
+    }
+    if ('decrease_speech_rate' === action) {
+      Sonify.decreaseSpeechRate();
+    }
   },
   helpWith(topic) {
 
@@ -139,6 +146,9 @@ export default {
       Sonify.play(options);
     }
   },
+  alterSignaling() {
+    // TODO alter signaling
+  },
   add(newArtifact, fromId, user = 0) {
     this.prepare(newArtifact);
     if (fromId !== undefined) this.link(newArtifact, fromId);
@@ -185,6 +195,9 @@ export default {
       }
       this.artifacts.splice(index, 1);
     }
+  },
+  removeSignaling() {
+    // TODO remove signaling
   },
   _dereference(fromId, destId) {
     const from = this.find(fromId);

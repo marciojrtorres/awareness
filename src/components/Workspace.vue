@@ -46,6 +46,8 @@ const keymap = {
     'Space': 'describe',
     'KeyC': 'connections',
     'KeyV': 'neighbors',
+    'Minus': 'decrease_speech_rate',
+    'Equal': 'increase_speech_rate',
   },
 };
 

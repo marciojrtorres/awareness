@@ -1,11 +1,22 @@
 /* eslint-disable no-console */
-
 import EventHub from './EventHub';
 import {session} from './Session';
-import {log} from 'util';
 
 const synth = window.speechSynthesis;
-const rate = 1.5;
+const rate = {
+  options: [0.5, 0.7, 1.0, 1.3, 1.6, 1.9],
+  selected: 2,
+  get value() {
+    return this.options[this.selected];
+  },
+  increase() {
+    this.selected += (this.selected < this.options.length - 1 ? 1 : 0);
+  },
+  decrease() {
+    this.selected -= (this.selected > 0 ? 1 : 0);
+  },
+};
+
 const volume = [1.00, 0.60, 0.24, 0.10];
 // distance 1 + 1 / 2 = 1
 // distance 2 + 1 / 2 = 1
@@ -110,7 +121,7 @@ const techniques = {
         `${username} incluiu esta tabela`;
       const utter = new SpeechSynthesisUtterance(msg);
       utter.volume = volume[Number.parseInt((e.distance + 1) / 2)] || 0.1,
-      utter.rate = rate;
+      utter.rate = rate.value;
       synth.speak(utter);
     },
     removal(e) {
@@ -119,7 +130,7 @@ const techniques = {
       const msg = `${username} excluiu tabela à ${direction}`;
       const utter = new SpeechSynthesisUtterance(msg);
       utter.volume = volume[Number.parseInt((e.distance + 1) / 2)] || 0.1,
-      utter.rate = rate;
+      utter.rate = rate.value;
       synth.speak(utter);
     },
     updating(e) {
@@ -129,19 +140,19 @@ const techniques = {
         + (e.distance > 0 ? ` à ${direction}` : '');
       const utter = new SpeechSynthesisUtterance(msg);
       utter.volume = volume[Number.parseInt((e.distance + 1) / 2)] || 0.1,
-      utter.rate = rate;
+      utter.rate = rate.value;
       synth.speak(utter);
     },
     error(e) {
       const msg = e.description;
       const utter = new SpeechSynthesisUtterance(msg);
-      utter.rate = rate;
+      utter.rate = rate.value;
       synth.speak(utter);
     },
     test(e) {
       const msg = 'Fala ativada!';
       const utter = new SpeechSynthesisUtterance(msg);
-      utter.rate = rate;
+      utter.rate = rate.value;
       synth.speak(utter);
     },
   },
@@ -169,7 +180,19 @@ export default {
   },
   speech(msg) {
     const utter = new SpeechSynthesisUtterance(msg);
-    utter.rate = rate;
+    utter.rate = rate.value;
+    synth.speak(utter);
+  },
+  increaseSpeechRate() {
+    rate.increase();
+    const utter = new SpeechSynthesisUtterance(`Velocidade aumentada`);
+    utter.rate = rate.value;
+    synth.speak(utter);
+  },
+  decreaseSpeechRate() {
+    rate.decrease();
+    const utter = new SpeechSynthesisUtterance(`Velocidade reduzida`);
+    utter.rate = rate.value;
     synth.speak(utter);
   },
 };
