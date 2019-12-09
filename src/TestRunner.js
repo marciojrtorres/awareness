@@ -76,9 +76,12 @@ export default {
   },
 };
 
+const answers = [];
+
 function question(ok) {
   setTimeout(() => {
-    const resp = prompt('(E,D,F)|(C,A)|(3)|(A|E|A)');
+    const answer = prompt('(E,D,F)|(C,A)|(3)|(A|E|A)');
+    answers.push(answer);
     ok();
   }, 1000);
 }

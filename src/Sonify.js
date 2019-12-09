@@ -28,7 +28,7 @@ const techniques = {
     addition: () => {},
     removal: () => {},
     updating: () => {},
-    error: () => { /* error swallowing */}
+    error: () => {/* error swallowing */},
   },
   abstract: {
     addition(e) {
@@ -42,11 +42,11 @@ const techniques = {
       });
       if (!e.distance || e.distance < 1) {
         EventHub.$emit('play', {
-            instrument: session.instrument(e.user),
-            note: 'E3',
-            volume: 1.0 - (0.2 * (e.distance - 2)),
-            pan: e.pan,
-            delay: 100,
+          instrument: session.instrument(e.user),
+          note: 'E3',
+          volume: 1.0 - (0.2 * (e.distance - 2)),
+          pan: e.pan,
+          delay: 100,
         });
       }
       EventHub.$emit('play', {
@@ -136,8 +136,8 @@ const techniques = {
     updating(e) {
       const direction = ['esquerda', 'frente', 'direita'][e.pan + 1];
       const username = session.user(e.user).name;
-      const msg = `${username} alterou ${e.distance > 0 ? 'uma' : 'esta'} tabela`
-        + (e.distance > 0 ? ` à ${direction}` : '');
+      const msg = `${username} alterou ${e.distance > 0
+        ? 'uma' : 'esta'} tabela` + (e.distance > 0 ? ` à ${direction}` : '');
       const utter = new SpeechSynthesisUtterance(msg);
       utter.volume = volume[Number.parseInt((e.distance + 1) / 2)] || 0.1,
       utter.rate = rate.value;

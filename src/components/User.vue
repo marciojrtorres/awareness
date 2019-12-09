@@ -6,7 +6,6 @@
 </template>
 
 <script>
-import EventHub from '../EventHub';
 import {session} from '../Session';
 
 export default {
@@ -22,7 +21,6 @@ export default {
   methods: {
     select() {
       session.select(this.id);
-      // EventHub.$emit('sample', this.instrument);
     },
   },
   props: {

@@ -2,6 +2,8 @@
 /* eslint-disable require-jsdoc */
 
 import Sonify from './Sonify';
+// import {db} from './Fire';
+// const interactions = [];
 
 let _id = 0;
 
@@ -9,6 +11,61 @@ export default {
   artifacts: [],
   links: [],
   lastSignaling: null,
+  session: null,
+  newSession() {
+    this.artifacts.splice(0);
+    this.links.splice(0);
+    this.lastSignaling = null;
+    this.session = null;
+    this.add({name: 'Raiz', x: 100, y: 10});
+
+    // db.add('sessions', {
+    //   name: 'Unamed'
+    // }).then(doc => {
+    //   this.session = doc;
+    //   console.log(doc.id);
+    //   this.add({name: 'Raiz', x: 100, y: 10});
+    // });
+  },
+  openSession(id) {
+
+    // const sessionRef = db.store.collection('sessions').doc(id)
+    // sessionRef.get().then(session => {
+    //   if (session.exists) {
+    //     this.session = sessionRef;
+    //     this.session.collection('interactions').orderBy('timestamp', 'asc')
+    //       .get().then(query => {
+    //       query.forEach(item => {
+    //         interactions.push(item.data());
+    //         console.dir(interactions);
+    //       });
+    //     });
+    //     this.session.collection('interactions').onSnapshot(snap => {
+    //       console.log(snap);
+    //     });
+    //     // if (!this.job) {
+    //     //   this.job = setInterval(() => {
+    //     //     console.log('check');
+    //     //     const act = interactions.shift();
+    //     //     if (act) {
+    //     //       this[act.interaction].call(this, act.artifact,
+    //                act.fromId, act.user);
+    //     //       console.log('execute:', act);
+    //     //     }
+    //     //   }, 1000);
+    //     // }
+    //   } else {
+    //     console.error(`Session ${id} does not exist!`);
+    //   }
+    // });
+
+    // this.session.collection('interactions').get().then(query => {
+    //   query.forEach(doc => {
+    //     console.log(doc.interaction);
+    //   });
+    // });
+
+  },
   action(action) {
     const art = this.artifacts.find((a) => a.focused);
     if (! art) {
@@ -31,15 +88,15 @@ export default {
 
     if ('describe' === action) {
       const focus = this.artifacts.find((a) => a.focused);
-      if (focus) Sonify.speech(`Tabela ${focus.name}`)
+      if (focus) Sonify.speech(`Tabela ${focus.name}`);
     }
 
     if ('connections' === action) {
       const focus = this.artifacts.find((a) => a.focused);
       if (! focus) return;
       const connections = [];
-      if (focus.left)  connections.push('esquerda');
-      if (focus.top)   connections.push('frente');
+      if (focus.left) connections.push('esquerda');
+      if (focus.top) connections.push('frente');
       if (focus.right) connections.push('direita');
 
       if (connections.length === 0) {
@@ -58,7 +115,8 @@ export default {
     if ('follow' === action) {
       if (this.lastSignaling) {
         const signalingMethod = `${this.lastSignaling.signal}Signaling`;
-        this[signalingMethod].apply(this, this.lastSignaling.args);
+        // this[signalingMethod].apply(this, this.lastSignaling.args);
+        this[signalingMethod](...this.lastSignaling.args);
       }
     }
 
@@ -66,8 +124,8 @@ export default {
       const focus = this.artifacts.find((a) => a.focused);
       if (! focus) return;
       const connections = [];
-      if (focus.left)  connections.push(`${focus.left.name} à esquerda`);
-      if (focus.top)   connections.push(`${focus.top.name} à frente`);
+      if (focus.left) connections.push(`${focus.left.name} à esquerda`);
+      if (focus.top) connections.push(`${focus.top.name} à frente`);
       if (focus.right) connections.push(`${focus.right.name} à direita`);
       connections.forEach((c) => {
         Sonify.speech(c);
@@ -153,11 +211,28 @@ export default {
     this.prepare(newArtifact);
     if (fromId !== undefined) this.link(newArtifact, fromId);
     this.artifacts.push(newArtifact);
+
+    // const doc = {
+    //   interaction: 'add',
+    //   artifact: {
+    //     name: newArtifact.name,
+    //     x: newArtifact.x,
+    //     y: newArtifact.y,
+    //   },
+    //   user,
+    //   timestamp: db.currentTimestamp,
+    // };
+    // if (fromId !== undefined && fromId !== null) {
+    //   doc.fromId = fromId;
+    // }
+    // this.session.collection('interactions').add(doc);
+
     this.lastSignaling = {
       signal: 'add',
       args: [newArtifact, user],
     };
     this.addSignaling(newArtifact, user);
+
     // newArtifact, user
     // const focusedArtifact = this.artifacts.find((a) => a.focused);
     // const where = this.where(focusedArtifact, newArtifact);

@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
 import CreateJS from './CreateJS.js';
 import EventHub from './EventHub.js';
-import {ERROR_SOUND_BASE64_DATA, ERROR_SOUND_2_BASE64_DATA} from './Sounds.js';
+import {ERROR_SOUND_2_BASE64_DATA} from './Sounds.js';
 
 // const error = new Audio(ERROR_SOUND_BASE64_DATA);
 const error2 = new Audio(ERROR_SOUND_2_BASE64_DATA);

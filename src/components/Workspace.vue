@@ -13,6 +13,8 @@
       </defs>
       <Button :x="15" :y="15" text="S" @click="step" />
       <Button :x="15" :y="35" text="R" @click="run" />
+      <Button :x="15" :y="75" text="New Session" @click="newSession" />
+      <Button :x="15" :y="95" text="Open Session" @click="openSession" />
       <Link v-for="link in lines" v-bind:key="link.index"
         :x1="link.x1" :y1="link.y1" :x2="link.x2" :y2="link.y2" />
       <Artifact v-for="artifact in artifacts" :artifact="artifact"
@@ -71,8 +73,14 @@ export default {
     },
   },
   methods: {
+    openSession(e) {
+      const sessionId = prompt('ID da Session:');
+      Model.openSession(sessionId);
+    },
+    newSession(e) {
+      Model.newSession();
+    },
     keyup(e) {
-      console.log(e.code);
       if (e.code in keymap.movements) {
         Model.moveFocus(keymap.movements[e.code]);
       }
@@ -112,7 +120,8 @@ export default {
     addArtifact(e) {
       const art = e.add || {
         name: e.name || 'Nova',
-        x: e.source.x + (e.source.step ? (++e.source.step * 120) : ((e.source.step = 1)* 120)),
+        x: e.source.x + (e.source.step ?
+          (++e.source.step * 120) : ((e.source.step = 1)* 120)),
         y: e.source.y + 100,
       };
       const fromId = e.source.id;
@@ -130,7 +139,7 @@ export default {
   created() {
     window.removeEventListener('keyup', this.keyup);
     window.addEventListener('keyup', this.keyup);
-    Model.add({name: 'Raiz', x: 100, y: 10});
+    // Model.add({name: 'Raiz', x: 100, y: 10});
     TestRunner.setup(this);
   },
 };
