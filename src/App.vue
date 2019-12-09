@@ -2,7 +2,7 @@
   <div id="app" v-if="loaded === true">
     <!-- <Users /> -->
     <Panel/>
-    <Workspace :width="600" :height="800"/>
+    <Workspace :width="600" :height="600"/>
   </div>
   <p v-else>Loading...</p>
 </template>

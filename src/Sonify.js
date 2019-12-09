@@ -5,7 +5,7 @@ import {session} from './Session';
 const synth = window.speechSynthesis;
 const rate = {
   options: [0.5, 0.7, 1.0, 1.3, 1.6, 1.9],
-  selected: 2,
+  selected: 3,
   get value() {
     return this.options[this.selected];
   },
@@ -18,6 +18,7 @@ const rate = {
 };
 
 const volume = [1.00, 0.60, 0.24, 0.10];
+const notes = ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3'];
 // distance 1 + 1 / 2 = 1
 // distance 2 + 1 / 2 = 1
 // distance 3 + 1 / 2 = 2
@@ -29,8 +30,10 @@ const techniques = {
     removal: () => {},
     updating: () => {},
     error: () => {/* error swallowing */},
+    accept: () => {},
+    reject: () => {},
   },
-  abstract: {
+  acorde: {
     addition(e) {
       EventHub.$emit('play', {
         instrument: session.instrument(e.user),
@@ -92,6 +95,98 @@ const techniques = {
     error(e) {
       EventHub.$emit('error');
     },
+    accept(e) {
+      EventHub.$emit('accept');
+    },
+    reject(e) {
+      EventHub.$emit('reject');
+    },
+    test(e) {
+      EventHub.$emit('play', {
+        instrument: session.currentUser.instrument,
+        note: 'C4',
+        volume: 0.7,
+        pan: 0,
+        delay: 0,
+      });
+      EventHub.$emit('play', {
+        instrument: session.instrument(e.user),
+        note: 'G3',
+        volume: 1.0 - (0.2 * (e.distance - 2)),
+        pan: e.pan,
+        delay: 0,
+      });
+    },
+  },
+  longo: {
+    addition(e) {
+      const step = 1.0 / (e.distance + 1);
+      EventHub.$emit('play', {
+        instrument: session.instrument(e.user),
+        note: notes[0],
+        volume: step,
+        pan: e.pan || 0,
+        delay: 0,
+      });
+      console.log('step', step);
+      for (let i = 1; i <= e.distance; i++) {
+        console.log('step', (i + 1) * step);
+        EventHub.$emit('play', {
+          instrument: session.instrument(e.user),
+          note: notes[i],
+          volume: (i + 1) * step,
+          pan: e.pan,
+          delay: i * 150,
+        });
+      }
+    },
+    removal(e) {
+      const step = 1.0 / (e.distance + 1);
+      EventHub.$emit('play', {
+        instrument: session.instrument(e.user),
+        note: notes[notes.length - 1],
+        volume: 1.0,
+        pan: e.pan || 0,
+        delay: 0,
+      });
+      for (let i = 1; i <= e.distance; i++) {
+        console.log('step', 1.0 - step * i);
+        EventHub.$emit('play', {
+          instrument: session.instrument(e.user),
+          note: notes[notes.length - 1 - i],
+          volume: 1.0 - (step * i),
+          pan: e.pan,
+          delay: i * 150,
+        });
+      }
+    },
+    updating(e) {
+      EventHub.$emit('play', {
+        instrument: session.instrument(e.user),
+        note: notes[2],
+        volume: 0.5,
+        pan: e.pan || 0,
+        delay: 0,
+      });
+      for (let i = 1; i <= e.distance; i++) {
+        EventHub.$emit('play', {
+          instrument: session.instrument(e.user),
+          note: notes[2],
+          volume: 0.5,
+          pan: e.pan,
+          delay: i * 150,
+        });
+      }
+    },
+    error(e) {
+      EventHub.$emit('error');
+    },
+    accept(e) {
+      EventHub.$emit('accept');
+    },
+    reject(e) {
+      EventHub.$emit('reject');
+    },
     test(e) {
       EventHub.$emit('play', {
         instrument: session.currentUser.instrument,
@@ -149,6 +244,16 @@ const techniques = {
       utter.rate = rate.value;
       synth.speak(utter);
     },
+    accept(e) {
+      const utter = new SpeechSynthesisUtterance('ok');
+      utter.rate = rate.value;
+      synth.speak(utter);
+    },
+    reject(e) {
+      const utter = new SpeechSynthesisUtterance('nã');
+      utter.rate = rate.value;
+      synth.speak(utter);
+    },
     test(e) {
       const msg = 'Fala ativada!';
       const utter = new SpeechSynthesisUtterance(msg);
@@ -157,6 +262,45 @@ const techniques = {
     },
   },
   recorded: {
+    addition(e) {
+      const direction = ['-left', '-front', '-right'][e.pan + 1];
+      const user = session.user(e.user).name.toLocaleLowerCase();
+      const path = `/recordings/${user}/`
+        + `inclui-${e.distance > 0 ? 'uma' : 'essa'}-tabela`
+        + `${e.distance > 0 ? direction : ''}.wav`;
+      const audio = new Audio(path);
+      audio.playbackRate = rate.value;
+      audio.volume = 1.0 - (e.distance * 0.2);
+      audio.play().catch((e) => {
+        console.error(e, path);
+      });
+    },
+    removal(e) {
+      const direction = ['-left', '-front', '-right'][e.pan + 1];
+      const user = session.user(e.user).name.toLocaleLowerCase();
+      const path = `/recordings/${user}/`
+        + `exclui-${e.distance > 0 ? 'uma' : 'essa'}-tabela`
+        + `${e.distance > 0 ? direction : ''}.wav`;
+      const audio = new Audio(path);
+      audio.playbackRate = rate.value;
+      audio.volume = 1.0 - (e.distance * 0.2);
+      audio.play().catch((e) => {
+        console.error(e, path);
+      });
+    },
+    updating(e) {
+      const direction = ['-left', '-front', '-right'][e.pan + 1];
+      const user = session.user(e.user).name.toLocaleLowerCase();
+      const path = `/recordings/${user}/`
+        + `alterei-${e.distance > 0 ? 'uma' : 'essa'}-tabela`
+        + `${e.distance > 0 ? direction : ''}.wav`;
+      const audio = new Audio(path);
+      audio.playbackRate = rate.value;
+      audio.volume = 1.0 - (e.distance * 0.2);
+      audio.play().catch((e) => {
+        console.error(e, path);
+      });
+    },
     test(e) {
       const user = session.currentUser.name.toLocaleLowerCase();
       const path = `/recordings/${user}/greeting.mp3`;
@@ -173,6 +317,12 @@ export default {
     return Object.keys(techniques);
   },
   selected: 'none',
+  accept() {
+
+  },
+  reject() {
+
+  },
   play(e) {
     const tech = techniques[this.selected];
     if (e.action in tech) tech[e.action](e);

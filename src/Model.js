@@ -74,6 +74,11 @@ export default {
       return;
     }
 
+    if ('help' === action) {
+      const msg = 'Ajuda /*placeholder*/';
+      Sonify.speech(msg);
+    }
+
     if ('rename' === action) {
       const msg = 'Digite o novo nome e tecle enter para confirmar '
                 + 'ou esc para cancelar';
@@ -149,10 +154,12 @@ export default {
     if (art[dir]) {
       art.focused = false;
       art[dir].focused = true;
-      Sonify.speech(`Tabela ${art[dir].name}`);
+      Sonify.play({action: 'accept'});
+      // Sonify.speech(`Tabela ${art[dir].name}`);
     } else {
-      Sonify.play({action: 'error',
-        description: 'Não há objetos nesta direção'});
+      Sonify.play({action: 'reject'});
+      // Sonify.play({action: 'error',
+      // description: 'Não há objetos nesta direção'});
     }
   },
   find(id) {
@@ -193,19 +200,23 @@ export default {
   alter(id, user = 0, data) {
     const index = this.artifacts.findIndex((a) => a.id == id);
     if (index >= 0) {
-      const focusedArtifact = this.artifacts.find((a) => a.focused);
       const beingAltered = this.find(id);
       beingAltered.name = data.newName || 'Sem nome';
-      const where = this.where(focusedArtifact, beingAltered);
-      const options = {
-        action: 'updating', user,
-        pan: where.dir, distance: where.count,
+      this.lastSignaling = {
+        signal: 'alter',
+        args: [beingAltered, user],
       };
-      Sonify.play(options);
+      this.alterSignaling(beingAltered, user);
     }
   },
-  alterSignaling() {
-    // TODO alter signaling
+  alterSignaling(alteredArtifact, user) {
+    const focusedArtifact = this.artifacts.find((a) => a.focused);
+    const where = this.where(focusedArtifact, alteredArtifact);
+    const options = {
+      action: 'updating', user,
+      pan: where.dir, distance: where.count,
+    };
+    Sonify.play(options);
   },
   add(newArtifact, fromId, user = 0) {
     this.prepare(newArtifact);
@@ -241,12 +252,11 @@ export default {
     // Sonify.play(options);
   },
   addSignaling(newArtifact, user) {
-    console.log('addSignaling', newArtifact, user);
+    // console.log('addSignaling', newArtifact, user);
     const focusedArtifact = this.artifacts.find((a) => a.focused);
     const where = this.where(focusedArtifact, newArtifact);
     const options = {action: 'addition', user,
       pan: where.dir, distance: where.count};
-    console.log(options);
     Sonify.play(options);
   },
   remove(id, user = 0) {
@@ -259,6 +269,7 @@ export default {
         action: 'removal', user,
         pan: where.dir, distance: where.count,
       };
+      this.lastSignaling = null;
       Sonify.play(options);
       let linkIndex = -1;
       while ((linkIndex = this.links.findIndex((link) =>
@@ -271,7 +282,7 @@ export default {
       this.artifacts.splice(index, 1);
     }
   },
-  removeSignaling() {
+  removeSignaling(removedArtifact, user) {
     // TODO remove signaling
   },
   _dereference(fromId, destId) {

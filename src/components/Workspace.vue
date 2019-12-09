@@ -21,7 +21,7 @@
         v-bind:key="artifact.index" @alter="alterArtifact"
         @add="addArtifact" @remove="removeArtifact" />
     </svg>
-    <pre><output>{{links}}</output></pre>
+    <!-- <output><output>{{links}}</output></pre> -->
   </div>
 </template>
 
@@ -50,6 +50,7 @@ const keymap = {
     'KeyV': 'neighbors',
     'Minus': 'decrease_speech_rate',
     'Equal': 'increase_speech_rate',
+    'IntlRo': 'help',
   },
 };
 
@@ -81,6 +82,7 @@ export default {
       Model.newSession();
     },
     keyup(e) {
+      // console.log(e.code);
       if (e.code in keymap.movements) {
         Model.moveFocus(keymap.movements[e.code]);
       }

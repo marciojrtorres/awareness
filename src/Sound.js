@@ -1,10 +1,14 @@
 /* eslint-disable require-jsdoc */
 import CreateJS from './CreateJS.js';
 import EventHub from './EventHub.js';
-import {ERROR_SOUND_2_BASE64_DATA} from './Sounds.js';
+import {ERROR_SOUND_2_BASE64_DATA,
+  ACCEPTED_SOUND_BASE64_DATA,
+  REJECTED_SOUND_BASE64_DATA} from './Sounds.js';
 
 // const error = new Audio(ERROR_SOUND_BASE64_DATA);
-const error2 = new Audio(ERROR_SOUND_2_BASE64_DATA);
+const error = new Audio(ERROR_SOUND_2_BASE64_DATA);
+const accept = new Audio(ACCEPTED_SOUND_BASE64_DATA);
+const reject = new Audio(REJECTED_SOUND_BASE64_DATA);
 
 export default {
   play({instrument, note, volume = 1, pan = 0, delay = 0}) {
@@ -31,12 +35,24 @@ export default {
     EventHub.$on('error', () => {
       this.error();
     });
+    EventHub.$on('accept', () => {
+      this.accept();
+    });
+    EventHub.$on('reject', () => {
+      this.reject();
+    });
   },
   sample() {
     CreateJS.Sound.play(`flute|C4`, {duration: 1000});
   },
   error() {
-    error2.play();
+    error.play();
+  },
+  accept() {
+    accept.play();
+  },
+  reject() {
+    reject.play();
   },
 };
 
