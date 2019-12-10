@@ -18,7 +18,7 @@ const rate = {
 };
 
 const volume = [1.00, 0.60, 0.24, 0.10];
-const notes = ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3'];
+const notes = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3'];
 // distance 1 + 1 / 2 = 1
 // distance 2 + 1 / 2 = 1
 // distance 3 + 1 / 2 = 2
@@ -102,19 +102,20 @@ const techniques = {
       EventHub.$emit('reject');
     },
     test(e) {
+      const instrument = session.instrument(e.user);
       EventHub.$emit('play', {
-        instrument: session.currentUser.instrument,
+        instrument,
         note: 'C4',
-        volume: 0.7,
+        volume: 0.8,
         pan: 0,
         delay: 0,
       });
       EventHub.$emit('play', {
-        instrument: session.instrument(e.user),
-        note: 'G3',
-        volume: 1.0 - (0.2 * (e.distance - 2)),
-        pan: e.pan,
-        delay: 0,
+        instrument,
+        note: 'D4',
+        volume: 0.8,
+        pan: 0,
+        delay: 150,
       });
     },
   },
@@ -327,6 +328,9 @@ export default {
     const tech = techniques[this.selected];
     if (e.action in tech) tech[e.action](e);
     else console.error(`Action ${e.action} not found in ${this.selected}`);
+  },
+  test(e) { /* {user: Number} */
+    techniques.acorde.test(e);
   },
   speech(msg) {
     const utter = new SpeechSynthesisUtterance(msg);

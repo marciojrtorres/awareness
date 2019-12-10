@@ -2,6 +2,7 @@
 /* eslint-disable require-jsdoc */
 
 import Sonify from './Sonify';
+import {session} from './Session';
 // import {db} from './Fire';
 // const interactions = [];
 
@@ -67,16 +68,37 @@ export default {
 
   },
   action(action) {
-    const art = this.artifacts.find((a) => a.focused);
-    if (! art) {
-      Sonify.play({action: 'error',
-        description: 'Não há objeto selecionado'});
-      return;
+
+    if ('presence' === action) {
+      let ms = 0;
+      session.state.users.forEach(u => {
+        if (u.id > 0) {
+          setTimeout(() => {
+            Sonify.test({user:u.id});
+            Sonify.speech(u.name);
+          }, ms);
+          ms += 2000;
+        }
+      });
     }
 
     if ('help' === action) {
       const msg = 'Ajuda /*placeholder*/';
       Sonify.speech(msg);
+    }
+
+    if ('increase_speech_rate' === action) {
+      Sonify.increaseSpeechRate();
+    }
+    if ('decrease_speech_rate' === action) {
+      Sonify.decreaseSpeechRate();
+    }
+
+    const art = this.artifacts.find((a) => a.focused);
+    if (!art) {
+      Sonify.play({action: 'error',
+        description: 'Não há objeto selecionado'});
+      return;
     }
 
     if ('rename' === action) {
@@ -120,7 +142,6 @@ export default {
     if ('follow' === action) {
       if (this.lastSignaling) {
         const signalingMethod = `${this.lastSignaling.signal}Signaling`;
-        // this[signalingMethod].apply(this, this.lastSignaling.args);
         this[signalingMethod](...this.lastSignaling.args);
       }
     }
@@ -136,13 +157,6 @@ export default {
         Sonify.speech(c);
       });
     }
-
-    if ('increase_speech_rate' === action) {
-      Sonify.increaseSpeechRate();
-    }
-    if ('decrease_speech_rate' === action) {
-      Sonify.decreaseSpeechRate();
-    }
   },
   helpWith(topic) {
 
@@ -155,11 +169,8 @@ export default {
       art.focused = false;
       art[dir].focused = true;
       Sonify.play({action: 'accept'});
-      // Sonify.speech(`Tabela ${art[dir].name}`);
     } else {
       Sonify.play({action: 'reject'});
-      // Sonify.play({action: 'error',
-      // description: 'Não há objetos nesta direção'});
     }
   },
   find(id) {
