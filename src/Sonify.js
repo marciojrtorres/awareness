@@ -329,7 +329,7 @@ export default {
     if (e.action in tech) tech[e.action](e);
     else console.error(`Action ${e.action} not found in ${this.selected}`);
   },
-  test(e) { /* {user: Number} */
+  test(e) {/* {user: Number} */
     techniques.acorde.test(e);
   },
   speech(msg) {

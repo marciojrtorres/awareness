@@ -68,13 +68,12 @@ export default {
 
   },
   action(action) {
-
     if ('presence' === action) {
       let ms = 0;
-      session.state.users.forEach(u => {
+      session.state.users.forEach((u) => {
         if (u.id > 0) {
           setTimeout(() => {
-            Sonify.test({user:u.id});
+            Sonify.test({user: u.id});
             Sonify.speech(u.name);
           }, ms);
           ms += 2000;

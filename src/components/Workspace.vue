@@ -51,7 +51,7 @@ const keymap = {
     'Minus': 'decrease_speech_rate',
     'Equal': 'increase_speech_rate',
     'IntlRo': 'help',
-    'KeyU': 'presence'
+    'KeyU': 'presence',
   },
 };
 
