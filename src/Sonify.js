@@ -316,7 +316,7 @@ const techniques = {
         + `${e.distance > 0 ? direction : ''}.wav`;
       const audio = new Audio(path);
       audio.playbackRate = rate.value;
-      audio.volume = 1.0 - (e.distance * 0.2);
+      audio.volume = volume[Number.parseInt((e.distance + 1) / 2)] || 0.1;
       audio.play().catch((e) => {
         console.error(e, path);
       });
@@ -329,7 +329,7 @@ const techniques = {
         + `${e.distance > 0 ? direction : ''}.wav`;
       const audio = new Audio(path);
       audio.playbackRate = rate.value;
-      audio.volume = 1.0 - (e.distance * 0.2);
+      audio.volume = volume[Number.parseInt((e.distance + 1) / 2)] || 0.1;
       audio.play().catch((e) => {
         console.error(e, path);
       });
@@ -342,7 +342,7 @@ const techniques = {
         + `${e.distance > 0 ? direction : ''}.wav`;
       const audio = new Audio(path);
       audio.playbackRate = rate.value;
-      audio.volume = 1.0 - (e.distance * 0.2);
+      audio.volume = volume[Number.parseInt((e.distance + 1) / 2)] || 0.1;
       audio.play().catch((e) => {
         console.error(e, path);
       });
