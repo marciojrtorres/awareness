@@ -25,17 +25,26 @@
 import Property from './Property';
 import Button from './Button';
 
+const names= [
+  'Alunos', 'Professores',
+  'Cursos', 'Disciplinas',
+  'Turmas', 'AnosLetivos',
+  'Semestres', 'Salas',
+  'Pavilhão', 'Bimestres'
+];
+
 export default {
   name: 'Artifact',
   methods: {
     alter() {
       const artifact = this.artifact;
-      const newName = prompt('Novo nome:');
+      const newName = names.splice(parseInt(Math.random() * names.length), 1)[0];
+      names.push(artifact.name);
       this.$emit('alter', {source: artifact, newName});
     },
     addArtifact() {
       const artifact = this.artifact;
-      const name = prompt('Nome:');
+      const name = names.splice(parseInt(Math.random() * names.length), 1)[0];
       this.$emit('add', {source: artifact, name});
     },
     removeArtifact() {

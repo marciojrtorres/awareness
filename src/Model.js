@@ -2,8 +2,7 @@
 /* eslint-disable require-jsdoc */
 
 import Sonify from './Sonify';
-import {session} from './Session';
-// import {db} from './Fire';
+import {db} from './Fire';
 // const interactions = [];
 
 let _id = 0;
@@ -13,20 +12,19 @@ export default {
   links: [],
   lastSignaling: null,
   session: null,
-  newSession() {
+  sequence: 0,
+  newSession(e) {
     this.artifacts.splice(0);
     this.links.splice(0);
     this.lastSignaling = null;
     this.session = null;
-    this.add({name: 'Raiz', x: 100, y: 10});
-
-    // db.add('sessions', {
-    //   name: 'Unamed'
-    // }).then(doc => {
-    //   this.session = doc;
-    //   console.log(doc.id);
-    //   this.add({name: 'Raiz', x: 100, y: 10});
-    // });
+    this.sequence = 0;
+    const name = prompt('Nome da sessão:');
+    db.add('sessions', {name}).then((doc) => {
+      this.session = doc;
+      this.add({name: 'Nova', x: 100, y: 10}, undefined, e.userId);
+      console.log(doc.id);
+    });
   },
   openSession(id) {
 
@@ -69,32 +67,28 @@ export default {
   },
   action(action) {
     if ('presence' === action) {
-      let ms = 0;
-      session.state.users.forEach((u) => {
-        if (u.id > 0) {
-          setTimeout(() => {
-            Sonify.test({user: u.id});
-            Sonify.speech(u.name);
-          }, ms);
-          ms += 2000;
-        }
-      });
+      Sonify.play({action: 'greeting'});
+      return;
     }
 
     if ('help' === action) {
       const msg = 'Ajuda /*placeholder*/';
       Sonify.speech(msg);
+      return;
     }
 
     if ('increase_speech_rate' === action) {
       Sonify.increaseSpeechRate();
+      return;
     }
     if ('decrease_speech_rate' === action) {
       Sonify.decreaseSpeechRate();
+      return;
     }
 
     const art = this.artifacts.find((a) => a.focused);
     if (!art) {
+      console.log('no focus');
       Sonify.play({action: 'error',
         description: 'Não há objeto selecionado'});
       return;
@@ -224,30 +218,18 @@ export default {
     const where = this.where(focusedArtifact, alteredArtifact);
     const options = {
       action: 'updating', user,
-      pan: where.dir, distance: where.count,
+      pan: where.dir || 0, distance: where.count,
     };
+    if (this.session) {
+      const doc = {sequence: ++this.sequence, ...options, timestamp: db.currentTimestamp};
+      this.session.collection('interactions').add(doc);
+    }
     Sonify.play(options);
   },
   add(newArtifact, fromId, user = 0) {
     this.prepare(newArtifact);
     if (fromId !== undefined) this.link(newArtifact, fromId);
     this.artifacts.push(newArtifact);
-
-    // const doc = {
-    //   interaction: 'add',
-    //   artifact: {
-    //     name: newArtifact.name,
-    //     x: newArtifact.x,
-    //     y: newArtifact.y,
-    //   },
-    //   user,
-    //   timestamp: db.currentTimestamp,
-    // };
-    // if (fromId !== undefined && fromId !== null) {
-    //   doc.fromId = fromId;
-    // }
-    // this.session.collection('interactions').add(doc);
-
     this.lastSignaling = {
       signal: 'add',
       args: [newArtifact, user],
@@ -266,7 +248,11 @@ export default {
     const focusedArtifact = this.artifacts.find((a) => a.focused);
     const where = this.where(focusedArtifact, newArtifact);
     const options = {action: 'addition', user,
-      pan: where.dir, distance: where.count};
+      pan: where.dir || 0, distance: where.count};
+    if (this.session) {
+      const doc = {sequence: ++this.sequence, ...options, timestamp: db.currentTimestamp};
+      this.session.collection('interactions').add(doc);
+    }
     Sonify.play(options);
   },
   remove(id, user = 0) {
@@ -277,10 +263,24 @@ export default {
       const where = this.where(focusedArtifact, toBeRemovedArtifact);
       const options = {
         action: 'removal', user,
-        pan: where.dir, distance: where.count,
+        pan: where.dir || 0, distance: where.count,
       };
-      this.lastSignaling = null;
+
+      if (this.session) {
+        const doc = {sequence: ++this.sequence, ...options, timestamp: db.currentTimestamp};
+        this.session.collection('interactions').add(doc);
+      }
       Sonify.play(options);
+
+      if (focusedArtifact === toBeRemovedArtifact) {
+        if (toBeRemovedArtifact.left) toBeRemovedArtifact.left.focused = true;
+        else if (toBeRemovedArtifact.right) toBeRemovedArtifact.right.focused = true;
+        else if (toBeRemovedArtifact.top) toBeRemovedArtifact.top.focused = true;
+        else {
+          console.error('There is not any artifact that could receive focus');
+        }
+      }
+
       let linkIndex = -1;
       while ((linkIndex = this.links.findIndex((link) =>
         link[0] === id || link[1] === id)) >= 0) {

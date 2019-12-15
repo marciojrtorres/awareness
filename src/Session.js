@@ -15,7 +15,7 @@ export const session = {
       },
       {
         id: 2,
-        name: 'Regina',
+        name: 'Tiago',
         instrument: 'guitar',
         recordings: {
         },

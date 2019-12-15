@@ -29,11 +29,25 @@ const techniques = {
     addition: () => {},
     removal: () => {},
     updating: () => {},
-    error: () => {/* error swallowing */},
+    error: () => {},
     accept: () => {},
     reject: () => {},
   },
   acorde: {
+    greeting(e) {
+      let ms = 0;
+      session.state.users.forEach((u) => {
+        if (u.id > 0) {
+          setTimeout(() => {
+            this.test({user: u.id});
+            const utter = new SpeechSynthesisUtterance(u.name);
+            utter.rate = rate.value;
+            synth.speak(utter);
+          }, ms);
+          ms += 2000;
+        }
+      });
+    },
     addition(e) {
       EventHub.$emit('play', {
         instrument: session.instrument(e.user),
@@ -43,15 +57,6 @@ const techniques = {
         pan: e.pan || 0,
         delay: 0,
       });
-      if (!e.distance || e.distance < 1) {
-        EventHub.$emit('play', {
-          instrument: session.instrument(e.user),
-          note: 'E3',
-          volume: 1.0 - (0.2 * (e.distance - 2)),
-          pan: e.pan,
-          delay: 100,
-        });
-      }
       EventHub.$emit('play', {
         instrument: session.instrument(e.user),
         note: 'G3',
@@ -120,6 +125,18 @@ const techniques = {
     },
   },
   longo: {
+    greeting(e) {
+      let ms = 0;
+      session.state.users.forEach((u) => {
+        if (u.id > 0) {
+          setTimeout(() => {
+            this.test({user: u.id});
+            // this.speech(u.name);
+          }, ms);
+          ms += 2000;
+        }
+      });
+    },
     addition(e) {
       const step = 1.0 / (e.distance + 1);
       EventHub.$emit('play', {
@@ -189,23 +206,35 @@ const techniques = {
       EventHub.$emit('reject');
     },
     test(e) {
+      const instrument = session.instrument(e.user);
       EventHub.$emit('play', {
-        instrument: session.currentUser.instrument,
+        instrument,
         note: 'C4',
-        volume: 0.7,
+        volume: 0.8,
         pan: 0,
         delay: 0,
       });
       EventHub.$emit('play', {
-        instrument: session.instrument(e.user),
-        note: 'G3',
-        volume: 1.0 - (0.2 * (e.distance - 2)),
-        pan: e.pan,
-        delay: 0,
+        instrument,
+        note: 'D4',
+        volume: 0.8,
+        pan: 0,
+        delay: 150,
       });
     },
   },
   speech: {
+    greeting(e) {
+      let msg = 'Estão presentes ';
+      session.state.users.forEach((u) => {
+        if (u.id > 0) {
+          msg += u.name + ' ';
+        }
+      });
+      const utter = new SpeechSynthesisUtterance(msg);
+      utter.rate = rate.value;
+      synth.speak(utter);
+    },
     play(e) {
       this[e.action](e);
     },
@@ -213,8 +242,8 @@ const techniques = {
       const direction = ['esquerda', 'frente', 'direita'][e.pan + 1];
       const username = session.user(e.user).name;
       const msg = e.distance && e.distance > 0 ?
-        `${username} incluiu tabela à ${direction}` :
-        `${username} incluiu esta tabela`;
+        `${username} incluiu uma tabela à ${direction}` :
+        `${username} incluiu essa tabela`;
       const utter = new SpeechSynthesisUtterance(msg);
       utter.volume = volume[Number.parseInt((e.distance + 1) / 2)] || 0.1,
       utter.rate = rate.value;
@@ -223,7 +252,9 @@ const techniques = {
     removal(e) {
       const direction = ['esquerda', 'frente', 'direita'][e.pan + 1];
       const username = session.user(e.user).name;
-      const msg = `${username} excluiu tabela à ${direction}`;
+      const msg = `${username} excluiu `
+        + (direction ? 'uma tabela ' : 'essa tabela ')
+        + (direction ? `a ${direction}` : '');
       const utter = new SpeechSynthesisUtterance(msg);
       utter.volume = volume[Number.parseInt((e.distance + 1) / 2)] || 0.1,
       utter.rate = rate.value;
@@ -233,27 +264,20 @@ const techniques = {
       const direction = ['esquerda', 'frente', 'direita'][e.pan + 1];
       const username = session.user(e.user).name;
       const msg = `${username} alterou ${e.distance > 0
-        ? 'uma' : 'esta'} tabela` + (e.distance > 0 ? ` à ${direction}` : '');
+        ? 'uma' : 'essa'} tabela` + (e.distance > 0 ? ` à ${direction}` : '');
       const utter = new SpeechSynthesisUtterance(msg);
       utter.volume = volume[Number.parseInt((e.distance + 1) / 2)] || 0.1,
       utter.rate = rate.value;
       synth.speak(utter);
     },
     error(e) {
-      const msg = e.description;
-      const utter = new SpeechSynthesisUtterance(msg);
-      utter.rate = rate.value;
-      synth.speak(utter);
+      EventHub.$emit('error');
     },
     accept(e) {
-      const utter = new SpeechSynthesisUtterance('ok');
-      utter.rate = rate.value;
-      synth.speak(utter);
+      EventHub.$emit('accept');
     },
     reject(e) {
-      const utter = new SpeechSynthesisUtterance('nã');
-      utter.rate = rate.value;
-      synth.speak(utter);
+      EventHub.$emit('reject');
     },
     test(e) {
       const msg = 'Fala ativada!';
@@ -263,6 +287,27 @@ const techniques = {
     },
   },
   recorded: {
+    greeting(e) {
+      const waves = [];
+      session.state.users.forEach((u) => {
+        if (u.id > 0) {
+          waves.push(`/recordings/${u.name.toLocaleLowerCase()}/greetings.wav`);
+        }
+      });
+      if (waves.length === 0) return;
+      let i = 0;
+      const audio = new Audio(waves[i++]);
+      audio.playbackRate = rate.value;
+      audio.addEventListener('ended', () => {
+        if (i < waves.length) {
+          audio.src = waves[i++];
+          audio.play();
+        }
+      });
+      audio.play().catch((e) => {
+        console.error(e);
+      });
+    },
     addition(e) {
       const direction = ['-left', '-front', '-right'][e.pan + 1];
       const user = session.user(e.user).name.toLocaleLowerCase();
@@ -301,6 +346,15 @@ const techniques = {
       audio.play().catch((e) => {
         console.error(e, path);
       });
+    },
+    error(e) {
+      EventHub.$emit('error');
+    },
+    accept(e) {
+      EventHub.$emit('accept');
+    },
+    reject(e) {
+      EventHub.$emit('reject');
     },
     test(e) {
       const user = session.currentUser.name.toLocaleLowerCase();

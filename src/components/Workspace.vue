@@ -22,6 +22,7 @@
         @add="addArtifact" @remove="removeArtifact" />
     </svg>
     <!-- <output><output>{{links}}</output></pre> -->
+    <pre><output>{{sessionData}}</output></pre>
   </div>
 </template>
 
@@ -32,6 +33,7 @@ import Button from './Button';
 import TestRunner from '../TestRunner';
 import Model from '../Model';
 import {session} from '../Session';
+import {db} from '../Fire';
 
 const keymap = {
   movements: {
@@ -61,6 +63,7 @@ export default {
     return {
       artifacts: Model.artifacts,
       links: Model.links,
+      sessionData: []
     };
   },
   computed: {
@@ -76,11 +79,22 @@ export default {
   },
   methods: {
     openSession(e) {
-      const sessionId = prompt('ID da Session:');
-      Model.openSession(sessionId);
+      this.sessionData.splice(0);
+      const name = prompt('Session name:');
+      db.store.collection('sessions').where('name', '==', name).get().then((snap) => {
+        snap.forEach((doc) => {
+          db.store.collection(`sessions/${doc.id}/interactions`)
+            .orderBy('sequence', 'asc').get().then((qs) => {
+              qs.forEach((ints) => {
+                this.sessionData.push(ints.data());
+              });
+          });
+        });
+      });
     },
     newSession(e) {
-      Model.newSession();
+      const userId = session.state.selected || e.user;
+      Model.newSession({userId});
     },
     keyup(e) {
       // console.log(e.code);
