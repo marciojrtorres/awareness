@@ -63,7 +63,7 @@ export default {
     return {
       artifacts: Model.artifacts,
       links: Model.links,
-      sessionData: []
+      sessionData: [],
     };
   },
   computed: {
@@ -81,19 +81,21 @@ export default {
     openSession(e) {
       this.sessionData.splice(0);
       const name = prompt('Session name:');
-      db.store.collection('sessions').where('name', '==', name).get().then((snap) => {
-        snap.forEach((doc) => {
-          db.store.collection(`sessions/${doc.id}/interactions`)
-            .orderBy('sequence', 'asc').get().then((qs) => {
-              qs.forEach((ints) => {
-                this.sessionData.push(ints.data());
-              });
+      db.store.collection('sessions').where('name', '==', name).get()
+          .then((snap) => {
+            snap.forEach((doc) => {
+              db.store.collection(`sessions/${doc.id}/interactions`)
+                  .orderBy('sequence', 'asc').get().then((qs) => {
+                    qs.forEach((ints) => {
+                      this.sessionData.push(ints.data());
+                    });
+                  });
+            });
           });
-        });
-      });
     },
     newSession(e) {
-      const userId = session.state.selected || e.user;
+      if (!session.state.selected) return alert('no user');
+      const userId = session.state.selected;
       Model.newSession({userId});
     },
     keyup(e) {

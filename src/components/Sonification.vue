@@ -1,6 +1,6 @@
 <template>
   <div class="sonification">
-    <h2>Tech</h2>
+    <h2>Estratégia</h2>
     <p :class="{sel: tech === sel}" v-for="tech in techniques"
       :key="tech" :data-value="tech" @click="selectSonificationTechnique">
       {{tech}}
@@ -37,27 +37,34 @@ export default {
 </script>
 
 <style scoped>
+    div.sonification {
+      font-size: 10pt;
+    }
     h2 {
-      font-size: 13pt;
-      background-color: grey;
       text-align: center;
+      font-size: 10pt;
     }
     div.sonification p.sel {
       font-weight: bold;
+      background-color: white;
     }
     div.sonification {
-        display: flex;
-        flex-direction: column;
-        width: 60px;
+      display: flex;
+      flex-direction: column;
+      width: 60px;
     }
     div.sonification div {
-        align-self: center;
+      align-self: center;
     }
     div.sonification p {
-        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
-          'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-        font-size: 0.8em;
-        margin-top: 0.2em;
-        text-align: center;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+        'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      font-size: 0.8em;
+      margin: 0.0em;
+      margin-bottom: 0.3em;
+      padding: 0.3em 0.0;
+      text-align: center;
+      background-color: silver;
+      border: 1px solid grey;
     }
 </style>

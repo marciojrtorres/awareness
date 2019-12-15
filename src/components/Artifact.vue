@@ -30,7 +30,7 @@ const names= [
   'Cursos', 'Disciplinas',
   'Turmas', 'AnosLetivos',
   'Semestres', 'Salas',
-  'Pavilhão', 'Bimestres'
+  'Pavilhão', 'Bimestres',
 ];
 
 export default {
@@ -38,7 +38,8 @@ export default {
   methods: {
     alter() {
       const artifact = this.artifact;
-      const newName = names.splice(parseInt(Math.random() * names.length), 1)[0];
+      const newName = names.splice(
+          parseInt(Math.random() * names.length), 1)[0];
       names.push(artifact.name);
       this.$emit('alter', {source: artifact, newName});
     },

@@ -20,6 +20,7 @@ export default {
     this.session = null;
     this.sequence = 0;
     const name = prompt('Nome da sessão:');
+    if (!name) return;
     db.add('sessions', {name}).then((doc) => {
       this.session = doc;
       this.add({name: 'Nova', x: 100, y: 10}, undefined, e.userId);
@@ -72,9 +73,22 @@ export default {
     }
 
     if ('help' === action) {
-      const msg = 'Ajuda /*placeholder*/';
+      const msg = ``
+      + `As teclas menos e mais reduzem e aumentam a velocidade da narração.`
+      + `A tecla U sinaliza os usuários estão presentes no espaço de trabalho`
+      + `A barra de espaço descreve o objeto focado atualmente.`
+      + `A tecla V narra quais são os vizinhos do objeto focado.`
+      + `A tecla C narra quais são as conexões do objeto focado.`
+      + `As teclas A, W e D movimentam o foco para o objeto conectado `
+      + `à esquerda, frente e direita.`
+      + `A tecla S repete a sinalização de mudança no espaço de trabalho `
+      + `relativo ao foco atual e permite segui-la até a origem.`;
       Sonify.speech(msg);
       return;
+    }
+
+    if ('sonification_none' === action) {
+      Sonify.selected = action.split('_')[1];
     }
 
     if ('increase_speech_rate' === action) {
@@ -221,7 +235,8 @@ export default {
       pan: where.dir || 0, distance: where.count,
     };
     if (this.session) {
-      const doc = {sequence: ++this.sequence, ...options, timestamp: db.currentTimestamp};
+      const doc = {sequence: ++this.sequence, ...options,
+        timestamp: db.currentTimestamp};
       this.session.collection('interactions').add(doc);
     }
     Sonify.play(options);
@@ -250,7 +265,8 @@ export default {
     const options = {action: 'addition', user,
       pan: where.dir || 0, distance: where.count};
     if (this.session) {
-      const doc = {sequence: ++this.sequence, ...options, timestamp: db.currentTimestamp};
+      const doc = {sequence: ++this.sequence, ...options,
+        timestamp: db.currentTimestamp};
       this.session.collection('interactions').add(doc);
     }
     Sonify.play(options);
@@ -267,16 +283,20 @@ export default {
       };
 
       if (this.session) {
-        const doc = {sequence: ++this.sequence, ...options, timestamp: db.currentTimestamp};
+        const doc = {sequence: ++this.sequence, ...options,
+          timestamp: db.currentTimestamp};
         this.session.collection('interactions').add(doc);
       }
       Sonify.play(options);
 
       if (focusedArtifact === toBeRemovedArtifact) {
-        if (toBeRemovedArtifact.left) toBeRemovedArtifact.left.focused = true;
-        else if (toBeRemovedArtifact.right) toBeRemovedArtifact.right.focused = true;
-        else if (toBeRemovedArtifact.top) toBeRemovedArtifact.top.focused = true;
-        else {
+        if (toBeRemovedArtifact.left) {
+          toBeRemovedArtifact.left.focused = true;
+        } else if (toBeRemovedArtifact.right) {
+          toBeRemovedArtifact.right.focused = true;
+        } else if (toBeRemovedArtifact.top) {
+          toBeRemovedArtifact.top.focused = true;
+        } else {
           console.error('There is not any artifact that could receive focus');
         }
       }
