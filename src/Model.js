@@ -289,6 +289,8 @@ export default {
       }
       Sonify.play(options);
 
+      this.lastSignaling = null;
+
       if (focusedArtifact === toBeRemovedArtifact) {
         if (toBeRemovedArtifact.left) {
           toBeRemovedArtifact.left.focused = true;
