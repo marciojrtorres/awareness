@@ -25,7 +25,7 @@ const notes = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3'];
 // distance 4 + 1 / 2 = 2
 
 const techniques = {
-  none: {
+  nenhuma: {
     addition: () => {},
     removal: () => {},
     updating: () => {},
@@ -33,7 +33,7 @@ const techniques = {
     accept: () => {},
     reject: () => {},
   },
-  acorde: {
+  earcons1: {
     greeting(e) {
       let ms = 0;
       session.state.users.forEach((u) => {
@@ -124,7 +124,7 @@ const techniques = {
       });
     },
   },
-  longo: {
+  earcons2: {
     greeting(e) {
       let ms = 0;
       session.state.users.forEach((u) => {
@@ -223,7 +223,7 @@ const techniques = {
       });
     },
   },
-  speech: {
+  falasinte: {
     greeting(e) {
       let msg = 'Estão presentes ';
       session.state.users.forEach((u) => {
@@ -286,7 +286,7 @@ const techniques = {
       synth.speak(utter);
     },
   },
-  recorded: {
+  falagrava: {
     greeting(e) {
       const waves = [];
       session.state.users.forEach((u) => {
