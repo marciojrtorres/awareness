@@ -187,5 +187,30 @@ function registerSounds(callback) {
   CreateJS.Sound.registerSound('./tones/piano/Gs5.mp3', 'piano|Gs5');
   CreateJS.Sound.registerSound('./tones/piano/Gs6.mp3', 'piano|Gs6');
 
+
+  CreateJS.Sound.registerSound('./tones/harp/A2.mp3', 'harp|A2');
+  CreateJS.Sound.registerSound('./tones/harp/A4.mp3', 'harp|A4');
+  CreateJS.Sound.registerSound('./tones/harp/A6.mp3', 'harp|A6');
+  CreateJS.Sound.registerSound('./tones/harp/B1.mp3', 'harp|B1');
+  CreateJS.Sound.registerSound('./tones/harp/B3.mp3', 'harp|B3');
+  CreateJS.Sound.registerSound('./tones/harp/B5.mp3', 'harp|B5');
+  CreateJS.Sound.registerSound('./tones/harp/B6.mp3', 'harp|B6');
+  CreateJS.Sound.registerSound('./tones/harp/C3.mp3', 'harp|C3');
+  CreateJS.Sound.registerSound('./tones/harp/C5.mp3', 'harp|C5');
+  CreateJS.Sound.registerSound('./tones/harp/D2.mp3', 'harp|D2');
+  CreateJS.Sound.registerSound('./tones/harp/D4.mp3', 'harp|D4');
+  CreateJS.Sound.registerSound('./tones/harp/D6.mp3', 'harp|D6');
+  CreateJS.Sound.registerSound('./tones/harp/D7.mp3', 'harp|D7');
+  CreateJS.Sound.registerSound('./tones/harp/E1.mp3', 'harp|E1');
+  CreateJS.Sound.registerSound('./tones/harp/E3.mp3', 'harp|E3');
+  CreateJS.Sound.registerSound('./tones/harp/E5.mp3', 'harp|E5');
+  CreateJS.Sound.registerSound('./tones/harp/F2.mp3', 'harp|F2');
+  CreateJS.Sound.registerSound('./tones/harp/F4.mp3', 'harp|F4');
+  CreateJS.Sound.registerSound('./tones/harp/F6.mp3', 'harp|F6');
+  CreateJS.Sound.registerSound('./tones/harp/F7.mp3', 'harp|F7');
+  CreateJS.Sound.registerSound('./tones/harp/G1.mp3', 'harp|G1');
+  CreateJS.Sound.registerSound('./tones/harp/G3.mp3', 'harp|G3');
+  CreateJS.Sound.registerSound('./tones/harp/G5.mp3', 'harp|G5');
+
   CreateJS.Sound.registerSound('./tones/flute/C4.mp3', 'flute|C4');
 }

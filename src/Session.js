@@ -20,6 +20,13 @@ export const session = {
         recordings: {
         },
       },
+      {
+        id: 3,
+        name: 'Stefane',
+        instrument: 'harp',
+        recordings: {
+        },
+      },
     ],
     selected: 0,
   },
